@@ -315,8 +315,9 @@ def teachers_system(): # teachers accounts
     k = readkey()
     while k != "1" and k != "2" and k != key.ESC:
         k = readkey()
+    os.system("cls")
     if k == "1":
-        schedule_function()
+        choose_class()
     elif k == "2":
         setting_function()
     elif k == key.ESC:
@@ -341,7 +342,7 @@ def schedule_function(): # To open schedule system function
     elif k == "3":
         show_all_assms()
     elif k == key.ESC:
-        teachers_system()
+        choose_class()
 #---------------------------------------------------------------------------------
 def display_assm():
     if len(assm) == 0:
@@ -371,16 +372,54 @@ def display_assm():
         for j in range(16-row_num+1):
             print()
 #---------------------------------------------------------------------------------
+def choose_class():
+    global selected_class
+    f = open("class_list.txt", "r")
+    class_list = f.readlines()
+    f.close()
+    for i in range(len(class_list)):
+        class_list[i] = class_list[i].strip("\n")
+    for j in range(len(class_list)):
+        class_list[j] = class_list[j].split("\t")
+    class_group = [0] * len(class_list[username_index])
+    date()
+    print("                                                Please Select the Class")
+    for y in range(10-len(class_group)):
+        print()
+    for x in range(len(class_list[username_index])):
+        class_group[x] = class_list[username_index][x]
+        print("                                                       <" + str(x + 1) + "> " + class_group[x])
+        print()
+    print("                                                      <ESC> Leave")
+    while True:
+        k = readkey()
+        if k.isnumeric(): # check if k is integers
+            k = int(k)
+            if k < 1 or k > len(class_group):
+                pass
+            else:
+                break # it will break when k is between a range(e.g. 1-3)
+        elif k != key.ESC:
+            pass
+        else:
+            break # it will break when key is ESC
+    if k == key.ESC:
+        teachers_system()
+    else:
+        selected_class = class_group[k-1]
+        schedule_function()
+#---------------------------------------------------------------------------------
 def get_assm():
-    f = open("assessments.txt", "r")
+    f = open(selected_class + "_assessments.txt", "r")
     a = f.readlines()
     f.close()
     for i in range(len(a)):
         a[i] = a[i].strip("\n")
-    bubble_sort(a)
-    while a[0] < current_date:
-        del a[0]
-    update_assm(a)
+    if len(a) > 0:
+        bubble_sort(a)
+        while a[0] < current_date and len(a) > 0:
+            del a[0]
+        update_assm(a)
     return a
 #---------------------------------------------------------------------------------
 def add_assms():
@@ -937,7 +976,7 @@ def update_password(): # update the password in text file
     f.close()
 #---------------------------------------------------------------------------------
 def update_assm(assm_list):
-    f = open("assessments.txt", "w")
+    f = open(selected_class + "_assessments.txt", "w")
     for i in range(len(assm_list)):
         if i < len(assm_list) - 1:
             f.write(assm_list[i] + "\n")
@@ -953,4 +992,4 @@ while True:	# main program
     else:
         break
 
-#45%
+#47%
