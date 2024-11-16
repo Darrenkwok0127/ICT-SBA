@@ -100,6 +100,10 @@ def get_class():
         class_list[i] = class_list[i].strip("\n")
     for j in range(len(class_list)):
         class_list[j] = class_list[j].split("\t")
+    for x in range(len(class_list)):
+        for y in range(len(class_list[x])):
+            bubble_sort(class_list[x])
+    update_class()
 #---------------------------------------------------------------------------------
 def get_adminpw_data(): # Getting administrator password data from text file
     f = open("encrypted_admin_pw.txt", "r")
@@ -127,7 +131,7 @@ def login(counting):
             print()
         print("LOGIN SUCCESSFUL".rjust(64))
         print()
-        print("Press ANY KEY to continue.".rjust(69))
+        print("Press <ANY KEY> to continue.".rjust(69))
         readkey()
         teachers_system() 
     elif password_index == 0:
@@ -137,7 +141,7 @@ def login(counting):
             print()
         print("LOGIN SUCCESSFUL".rjust(64))
         print()
-        print("Press ANY KEY to continue.".rjust(69))
+        print("Press <ANY KEY> to continue.".rjust(69))
         readkey()
         admin_system() 
     else:
@@ -171,7 +175,7 @@ def admin_system(): # admin account
     print("\t\t\t\t\t\t    Welcome Back." , login_name[username_index])
     for x in range(8):
         print()
-    print("\t\t\t\t        <1>  School Teachers Information")
+    print("\t\t\t\t        <1>  Teachers Class Information")
     print()
     print("\t\t\t\t        <2>  Settings (Administrator)")
     print()
@@ -190,6 +194,8 @@ def admin_system(): # admin account
         return
 #---------------------------------------------------------------------------------
 def teachers_info_function():
+    global login_name, password
+    login_name, password = get_data()
     date()
     for x in range(9):
         print()
@@ -208,34 +214,83 @@ def teachers_info_function():
             teachers_info_function()
 #---------------------------------------------------------------------------------
 def show_assigned_class(index):
+    get_class()
     os.system("cls")
     date()
     for i in range(10):
         print()
-    if len(class_list[index]) > 0:
+    if class_list[index][0] != "Not yet Assigned":
         print("                                           Current Class Assigned:", end = " ")
         for i in range(len(class_list[index])):
-            print(class_list[index][i], end = " ")
+            if (i+1) % 4 != 0:
+                print(class_list[index][i], end = " ")
+            else:
+                print(class_list[index][i], end = "\n")
+                print("                                                                   ", end = "")
         print()
         print()
-        print("                                         <ENTER> Change Info       <ESC> Back")
+        print("                                   <1> Add Class       <2> Delete Class       <ESC> Back")
         k = readkey()
-        while k != key.ENTER and k != key.ESC:
+        while k != "1" and k != "2" and k != key.ESC:
             k = readkey()
-        os.system("cls")
-        if k == key.ENTER:
-            selected_form = choose_form(index)
-            if selected_form != None:
-                selected_form_char = choose_form_char(index)
-                if selected_form_char != None:
-                    selected_class = str(selected_form) + selected_form_char
-                    print(selected_class)
-                    readkey()
-        elif k == key.ESC:
-            teachers_info_function()
     else:
-        print("There is no Class Assigned.")
-        readkey()
+        print("                                              There is no Class Assigned.")
+        print()
+        print("                                             <1> Add Class       <ESC> Back")
+        k = readkey()
+        while k != "1" and k != key.ESC:
+            k = readkey()
+    os.system("cls")
+    if k == "1":
+        add_class(index)
+    elif k == "2":
+        del_class(index)
+    elif k == key.ESC:
+        teachers_info_function()
+#---------------------------------------------------------------------------------
+def add_class(index):
+    stop = False
+    while not stop:
+        selected_form = choose_form(index)
+        if selected_form == None:
+            break
+        else:
+            selected_form_char = choose_form_char(index)
+            if selected_form_char == None:
+                break
+            else:
+                selected_class = str(selected_form) + selected_form_char
+                check, temp = linear_search(class_list[index], selected_class)
+                if not check:
+                    if class_list[index][0] == "Not yet Assigned":
+                        class_list[index][0] = selected_class
+                    else:
+                        class_list[index] = class_list[index] + [selected_class]
+                    update_class()
+                    date()
+                    for i in range(10):
+                        print()
+                    print("                                            Do you want to Assign More? ")
+                    print()
+                    print("                                         <ENTER> Continue       <ESC> Back")
+                    k = readkey()
+                    while k != key.ENTER and k != key.ESC:
+                        k = readkey()
+                    if k == key.ENTER:
+                        os.system("cls")
+                        pass
+                    elif k == key.ESC:
+                        stop = True
+                        show_assigned_class(index)
+                else:
+                    date()
+                    for i in range(10):
+                        print()
+                    print("                                           This Class Had Already Assigned.")
+                    print()
+                    print("                                              Press <ANY KEY> To Return")
+                    readkey()
+                    os.system("cls")
 #---------------------------------------------------------------------------------
 def choose_form(index):
     leave = False
@@ -301,6 +356,75 @@ def choose_form_char(index):
             leave = True
             show_assigned_class(index)
 #---------------------------------------------------------------------------------
+def del_class(index):
+    col = 1
+    row = 1
+    class_num = 1
+    leave = False
+    while not leave:
+        row_num = 0
+        os.system("cls")
+        date()
+        for x in range(5):
+            print()
+        print("                                                ", end = "")
+        for i in range(len(class_list[index])):
+            if (i+1) % 4 != 0:
+                if i+1 != class_num:
+                    print(class_list[index][i], end = "      ")
+                else:
+                    print(Fore.RED + class_list[index][i] + Style.RESET_ALL, end = "      ")
+            else:
+                if i+1 != class_num:
+                    print(class_list[index][i], end = "\n")
+                else:
+                    print(Fore.RED + class_list[index][i] + Style.RESET_ALL, end = "\n")
+                row_num += 2
+                print()
+                print("                                                ", end = "")
+        print()
+        for x in range(15-row_num):
+            print()
+        print("                                           <UP>")
+        print()
+        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
+        print()
+        print("                                          <DOWN>")
+        k = readkey()
+        while k != key.ESC and k != key.ENTER and k != key.LEFT and k != key.RIGHT and k != key.UP and k != key.DOWN:
+            k = readkey()
+        if k == key.LEFT and col > 1:
+            col -= 1
+            class_num -= 1
+        elif k == key.RIGHT and col < 4 and class_num < len(class_list[index]):
+            col += 1
+            class_num += 1
+        elif k == key.UP and row > 1:
+            row -= 1
+            class_num -= 4
+        elif k == key.DOWN and class_num+4 <= len(class_list[index]):
+            row += 1
+            class_num += 4
+        elif k == key.ENTER:
+            leave = True
+            os.system("cls")
+            if len(class_list[index]) == 1:
+                class_list[index][0] = "Not yet Assigned"
+            else:
+                del class_list[index][class_num-1]
+            update_class()
+            date()
+            for z in range(10):
+                print()
+            print("                                                Class Has Been Deleted")
+            print()
+            print("                                              Press <ANY KEY> To Return")
+            readkey()
+            show_assigned_class(index)
+        elif k == key.ESC:
+            leave = True
+            show_assigned_class(index)
+#---------------------------------------------------------------------------------
 def admin_function():
     os.system("cls")
     date()
@@ -337,8 +461,10 @@ def admin_function():
         admin_system()
 #---------------------------------------------------------------------------------
 def find_pw_function():
+    global login_name, password
     temp = 0
     date()
+    login_name, password = get_data()
     admin_pw = get_adminpw_data()
     print("<Empty input> Exit".rjust(65))
     print()
@@ -419,15 +545,17 @@ def create_acc_function(): # To create a new teacher account
                     else:
                         pw_ok = pw_check(add_password)
                         if pw_ok:
-                            global login_name, password
+                            global login_name, password, class_list
                             found = True
                             login_name = login_name + [0]
                             password = password + [0]
+                            class_list = class_list + [["Not yet Assigned"]]
                             add_password = encrypted_pw(add_password)
                             login_name[len(login_name)-1] = add_username
                             password[len(password)-1] = add_password
                             update_username()
                             update_password()
+                            update_class()
                             os.system("cls")
                             for x in range(12):
                                 print()
@@ -446,6 +574,7 @@ def delete_acc_function(): # To delete teachers' account
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
+    print()
     if input_admin_pw == "":
         admin_function()
     else:
@@ -466,24 +595,26 @@ def delete_acc_function(): # To delete teachers' account
                     break
                 else:
                     check, index_user = linear_search(login_name, input_accname)
-                    if check:
+                    if check and index_user != 0:
                         found = True
                         del login_name[index_user]
                         del password[index_user]
+                        del class_list[index_user]
                         update_username()
                         update_password()
+                        update_class()
                         os.system("cls")
                         for i in range(12):
                             print()
                         print("\t\t\t\t\t      ACCOUNT DELETE SUCCESSFUL")
                         print()
-                        print("\t\t\t\t\t       Press ANY KEY To Exit")
+                        print("\t\t\t\t\t       Press <ANY KEY> To Exit")
                         readkey()
                         admin_function()
                     else:
-                        temp += 1
+                        temp = 1
                         os.system("cls")
-                        print("                                         Username not found. Please try it again")
+                        print("                                    Username not found / Invalid. Please try it again")
                         date()
 #---------------------------------------------------------------------------------
 def teachers_system(): # teachers accounts
@@ -507,6 +638,45 @@ def teachers_system(): # teachers accounts
         setting_function()
     elif k == key.ESC:
         return
+#---------------------------------------------------------------------------------
+def choose_class():
+    date()
+    if class_list[username_index][0] != "Not yet Assigned":
+        global selected_class
+        class_group = [0] * len(class_list[username_index])
+        print("                                                Please Select the Class")
+        for y in range(10-len(class_group)):
+            print()
+        for x in range(len(class_list[username_index])):
+            class_group[x] = class_list[username_index][x]
+            print("                                                       <" + str(x + 1) + "> " + class_group[x])
+            print()
+        print("                                                      <ESC> Leave")
+        while True:
+            k = readkey()
+            if k.isnumeric(): # check if k is integers
+                k = int(k)
+                if k < 1 or k > len(class_group):
+                    pass
+                else:
+                    break # it will break when k is between a range(e.g. 1-3)
+            elif k != key.ESC:
+                pass
+            else:
+                break # it will break when key is ESC
+        if k == key.ESC:
+            teachers_system()
+        else:
+            selected_class = class_group[k-1]
+            schedule_function()
+    else:
+        for i in range(10):
+            print()
+        print("                                               Class Not yet Assigned.")
+        print()
+        print("                                              Press <ANY KEY> To Return")
+        readkey()
+        teachers_system()
 #---------------------------------------------------------------------------------
 def schedule_function(): # To open schedule system function
     global assm
@@ -556,36 +726,6 @@ def display_assm():
             print("\t\t\t And More.....")
         for j in range(17-row_num):
             print()
-#---------------------------------------------------------------------------------
-def choose_class():
-    global selected_class
-    class_group = [0] * len(class_list[username_index])
-    date()
-    print("                                                Please Select the Class")
-    for y in range(10-len(class_group)):
-        print()
-    for x in range(len(class_list[username_index])):
-        class_group[x] = class_list[username_index][x]
-        print("                                                       <" + str(x + 1) + "> " + class_group[x])
-        print()
-    print("                                                      <ESC> Leave")
-    while True:
-        k = readkey()
-        if k.isnumeric(): # check if k is integers
-            k = int(k)
-            if k < 1 or k > len(class_group):
-                pass
-            else:
-                break # it will break when k is between a range(e.g. 1-3)
-        elif k != key.ESC:
-            pass
-        else:
-            break # it will break when key is ESC
-    if k == key.ESC:
-        teachers_system()
-    else:
-        selected_class = class_group[k-1]
-        schedule_function()
 #---------------------------------------------------------------------------------
 def get_assm():
     f = open(selected_class + "_assessments.txt", "r")
@@ -785,7 +925,7 @@ def choose_del_assm():
 #---------------------------------------------------------------------------------
 def show_all_assms():
     blank_line = 0
-    total_page_num = (len(assm)//10)+1
+    total_page_num = (len(assm)//11)+1
     leave = False
     start_num = 0
     page_num = 1
@@ -798,7 +938,7 @@ def show_all_assms():
                 print("\t\t\t\t\t\t"+ assm[i])
                 print()
                 blank_line += 2
-            for j in range(26-blank_line):
+            for j in range(23-blank_line):
                 print()
             print("\t\t\t\t\t\t  <ESC> Leave")
             k = readkey()
@@ -878,11 +1018,11 @@ def choose_month():
                 print(Fore.RED + month_list[x] + Style.RESET_ALL, end = "\t")
         for x in range(17):
             print()
-        print("\t\t\t            <UP> ")
+        print("                                           <UP>")
         print()
-        print("\t\t\t     <LEFT>       <RIGHT>        <ENTER> Confirm        <ESC> Leave")
+        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
         print()
-        print("\t\t\t           <DOWN>")
+        print("                                          <DOWN>")
         k = readkey()
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
@@ -922,11 +1062,11 @@ def choose_subject():
             print()
         for i in range(15):
             print()
-        print("\t\t\t            <UP> ")
+        print("                                           <UP>")
         print()
-        print("\t\t\t     <LEFT>       <RIGHT>        <ENTER> Confirm        <ESC> Leave")
+        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
         print()
-        print("\t\t\t           <DOWN>")
+        print("                                          <DOWN>")
         k = readkey()
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
@@ -1019,11 +1159,11 @@ def choose_deadline(month):
             print()
         for i in range(11):
             print()
-        print("\t\t\t            <UP> ")
+        print("                                           <UP>")
         print()
-        print("\t\t\t     <LEFT>       <RIGHT>        <ENTER> Confirm        <ESC> Leave")
+        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
         print()
-        print("\t\t\t           <DOWN>")
+        print("                                          <DOWN>")
         k = readkey()
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
@@ -1069,6 +1209,7 @@ def setting_function(): # To open setting function
         teachers_system()
 #--------------------------------------------------------------------------------- 
 def resetpw_function(): # To reset password
+    global login_name, password
     pw_ok = False
     date()
     print("")
@@ -1105,6 +1246,7 @@ def resetpw_function(): # To reset password
                             new_pw = encrypted_pw(new_pw)
                             password[password_index] = new_pw
                             update_password()
+                            login_name, password = get_data()
                             for x in range(10):
                                 print()
                             print("RESET PASSWORD SUCCESSFUL".rjust(68))
@@ -1134,7 +1276,7 @@ def admin_resetpw_function(): # To reset password
         if old_pw != password[password_index]:
             os.system("cls")
             print("The Old Password is incorrect".rjust(70))
-            resetpw_function()
+            admin_resetpw_function()
         else:
             new_pw = input("Enter the New Password: ".rjust(64))
             if new_pw == "":
@@ -1147,7 +1289,7 @@ def admin_resetpw_function(): # To reset password
                     os.system("cls")
                     if new_pw != re_enter_pw:
                         print("Two New Password are not the same ".rjust(76))
-                        resetpw_function()
+                        admin_resetpw_function()
                     else:
                         pw_ok = pw_check(new_pw)
                         if pw_ok == True:
@@ -1164,7 +1306,7 @@ def admin_resetpw_function(): # To reset password
                             
                         else:
                             print("The New Password Does Not Meet Requirements".rjust(77))
-                            resetpw_function()
+                            admin_resetpw_function()
 #---------------------------------------------------------------------------------
 def pw_check(pw):
     word_length, capital, small_letter, num, blank_space = pw_range_check(pw)
@@ -1234,7 +1376,16 @@ def update_assm(assm_list):
     f.close()
 #---------------------------------------------------------------------------------
 def update_class():
-        print()
+    f = open("class_list.txt", "w")
+    for i in range(len(class_list)):
+        for j in range(len(class_list[i])):
+            if j < len(class_list[i]) - 1:
+                f.write(class_list[i][j] + "\t")
+            elif i != len(class_list) - 1 and j != len(class_list[i]):
+                f.write(class_list[i][j] + "\n")
+            else:
+                f.write(class_list[i][j] + "")
+    f.close()
 #---------------------------------------------------------------------------------
 while True:	# main program
     login_or_not = main_menu()
@@ -1244,4 +1395,4 @@ while True:	# main program
     else:
         break
 
-#49%
+#55%
