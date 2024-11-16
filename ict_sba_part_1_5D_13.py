@@ -67,6 +67,14 @@ def linear_search(arr, target): # To search if the target exists(e.g. teachers a
     else:
         return found, None
 #---------------------------------------------------------------------------------
+def search_admin(arr, target): # To search if the target exists(e.g. teachers account)
+    found = False
+    if arr[0] == target:
+        found = True
+        return found, 0
+    else:
+        return found, None
+#---------------------------------------------------------------------------------
 def bubble_sort(unsorted_list):
     for i in range(len(unsorted_list) - 1):
         for j in range(len(unsorted_list) - 1 - i):
@@ -122,9 +130,19 @@ def login(counting):
     print()
     input_password = input("Password: ".rjust(60))
     input_password = encrypted_pw(input_password) # Encrypting password(unencrypted) so that it uses to find if it is correct
-    check1, username_index = linear_search(login_name, input_username)
-    check2, password_index = linear_search(password, input_password)
-    if check1 == True and check2 == True and username_index != 0 and username_index == password_index:
+    isadmin1, username_index = search_admin(login_name, input_username)
+    if isadmin1:
+        check1 = False
+        check2 = False
+        isadmin2, password_index = search_admin(password, input_password)
+    else:
+        check1, username_index = linear_search(login_name, input_username)
+        if username_index != None and password[username_index] == input_password:
+            password_index = username_index
+            check2 = True
+        else:
+            check2 = False
+    if check1 and check2 and username_index == password_index:
         os.system("cls")
         get_class()
         for x in range(12):
@@ -134,7 +152,7 @@ def login(counting):
         print("Press <ANY KEY> to continue.".rjust(69))
         readkey()
         teachers_system() 
-    elif password_index == 0:
+    elif isadmin1 and isadmin2:
         os.system("cls")
         get_class()
         for x in range(12):
@@ -257,7 +275,7 @@ def add_class(index):
         else:
             selected_form_char = choose_form_char(index)
             if selected_form_char == None:
-                break
+                pass
             else:
                 selected_class = str(selected_form) + selected_form_char
                 check, temp = linear_search(class_list[index], selected_class)
@@ -310,14 +328,21 @@ def choose_form(index):
         for i in range(22):
             print()
         print("\t\t\t     <LEFT>       <RIGHT>        <ENTER> Confirm        <ESC> Leave")
+        print(form_num)
         k = readkey()
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and form_num > 1:
-            form_num -= 1
-        elif k == key.RIGHT and form_num < len(form_list):
-            form_num += 1
+        if k == key.LEFT and form_num >= 1:
+            if form_num-1 < 1:
+                form_num = len(form_list)
+            else:
+                form_num -= 1
+        elif k == key.RIGHT and form_num <= len(form_list):
+            if form_num+1 > len(form_list):
+                form_num = 1
+            else:
+                form_num += 1
         elif k == key.ENTER:
             return form_num
         elif k == key.ESC:
@@ -342,19 +367,25 @@ def choose_form_char(index):
         for i in range(22):
             print()
         print("\t\t\t     <LEFT>       <RIGHT>        <ENTER> Confirm        <ESC> Leave")
+        print(form_char_num)
         k = readkey()
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and form_char_num > 1:
-            form_char_num -= 1
-        elif k == key.RIGHT and form_char_num < len(form_char_list):
-            form_char_num += 1
+        if k == key.LEFT and form_char_num >= 1:
+            if form_char_num-1 < 1:
+                form_char_num = len(form_char_list)
+            else:
+                form_char_num -= 1
+        elif k == key.RIGHT and form_char_num <= len(form_char_list):
+            if form_char_num+1 > len(form_char_list):
+                form_char_num = 1
+            else:
+                form_char_num += 1
         elif k == key.ENTER:
             return form_char_list[form_char_num-1]
         elif k == key.ESC:
             leave = True
-            show_assigned_class(index)
 #---------------------------------------------------------------------------------
 def del_class(index):
     col = 1
@@ -406,21 +437,31 @@ def del_class(index):
             row += 1
             class_num += 4
         elif k == key.ENTER:
-            leave = True
             os.system("cls")
-            if len(class_list[index]) == 1:
-                class_list[index][0] = "Not yet Assigned"
-            else:
-                del class_list[index][class_num-1]
-            update_class()
             date()
             for z in range(10):
                 print()
-            print("                                                Class Has Been Deleted")
+            print("                                                You Want To Delete " + class_list[index][class_num-1] + "?")
             print()
-            print("                                              Press <ANY KEY> To Return")
-            readkey()
-            show_assigned_class(index)
+            print("                                             <ENTER> Confirm      <ESC> Back")
+            k = readkey()
+            while k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.ENTER:
+                leave = True
+            elif k == key.ESC:
+                del_class(index)
+            if leave:
+                if len(class_list[index]) == 1:
+                    class_list[index][0] = "Not yet Assigned"
+                else:
+                    del class_list[index][class_num-1]
+                update_class()
+                
+                if class_list[index][0] == "Not yet Assigned":
+                    show_assigned_class(index)
+                else:
+                    del_class(index)
         elif k == key.ESC:
             leave = True
             show_assigned_class(index)
@@ -505,6 +546,7 @@ def find_pw_function():
                         temp += 1
 #---------------------------------------------------------------------------------
 def create_acc_function(): # To create a new teacher account
+    global login_name, password, class_list
     pw_ok = False
     found = False
     date()
@@ -533,9 +575,13 @@ def create_acc_function(): # To create a new teacher account
                 for y in range(3):
                     print()
                 add_username = input("\t\t\t         Enter New Teacher Account Username: ")
+                check, temp = linear_search(login_name, add_username)
                 if add_username == "":
                     admin_function()
                     break
+                elif check:
+                    os.system("cls")
+                    print("Username Has Been Used. Please Try Again".rjust(77)) 
                 else:
                     print()
                     add_password = input("\t\t\t         Enter New Teacher Account Password: ")
@@ -545,7 +591,6 @@ def create_acc_function(): # To create a new teacher account
                     else:
                         pw_ok = pw_check(add_password)
                         if pw_ok:
-                            global login_name, password, class_list
                             found = True
                             login_name = login_name + [0]
                             password = password + [0]
@@ -684,11 +729,20 @@ def schedule_function(): # To open schedule system function
     date()
     assm = get_assm()
     display_assm()
-    print("\t\t\t<1> Schedule Assessments\t\t <2>  Delete Assessments\n")
-    print("\t\t\t<3> Show All Assessments\t\t<ESC> Back")
-    k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != key.ESC:
+    if len(assm) == 0:
+        print("                                              <1> Schedule Assessments")
+        print()
+        print("                                              <ESC> Back")
         k = readkey()
+        while k != "1" and k != key.ESC:
+            k = readkey()
+    else:
+        print("                        <1> Schedule Assessments                 <2>  Delete Assessments")
+        print()
+        print("                        <3> Show All Assessments                <ESC> Back")
+        k = readkey()
+        while k != "1" and k != "2" and k != "3" and k != key.ESC:
+            k = readkey()
     os.system("cls")
     if k == "1":
         add_assms()
@@ -741,37 +795,58 @@ def get_assm():
     return a
 #---------------------------------------------------------------------------------
 def add_assms():
-    selected_subject = choose_subject()
-    if selected_subject != None:
-        selected_type = choose_assm_type()
-        if selected_type != None:
-            selected_month = choose_month()
-            if selected_month != None:
-                selected_day = choose_deadline(selected_month)
-                if selected_day != None:
-                    selected_month = "{:02d}".format(selected_month)
-                    
-                    selected_day = "{:02d}".format(selected_day)
-                    for i in range(11):
-                        print()
-                    assm_deadline = str(schedule_year) + "-" + selected_month + "-" + selected_day + " " + selected_subject + " " + selected_type
-                    print("\t\t\t\t     The Assessment schedule on ["+ assm_deadline + "]")
-                    print()
-                    print("\t\t\t\t\t\t\tConfirm ?")
-                    print()
-                    print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
-                    k = readkey()
-                    while k != key.ENTER and k != key.ESC:
-                        k = readkey()
-                    os.system("cls")
-                    if k == key.ENTER:
-                        global assm
-                        assm = assm + [0]
-                        assm[len(assm) - 1] = assm_deadline
-                        update_assm(assm)
-                        schedule_function()
-                    elif k == key.ESC:
-                        add_assms()
+    back1 = False
+    while not back1:
+        selected_subject = choose_subject()
+        if selected_subject == None:
+            back1 = True
+            schedule_function()
+        else:
+            back2 = False
+            while not back2:
+                selected_type = choose_assm_type()
+                if selected_type == None:
+                    back2 = True
+                else:
+                    back3 = False
+                    while not back3:
+                        selected_month = choose_month()
+                        if selected_month == None:
+                            back3 = True
+                        else:
+                            back4 = False
+                            while not back4:
+                                selected_month = int(selected_month)
+                                selected_day = choose_deadline(selected_month)
+                                if selected_day == None:
+                                    back4 = True
+                                else:
+                                    selected_month = "{:02d}".format(selected_month)
+                                    selected_day = "{:02d}".format(selected_day)
+                                    for i in range(11):
+                                        print()
+                                    assm_deadline = str(schedule_year) + "-" + selected_month + "-" + selected_day + " " + selected_subject + " " + selected_type
+                                    print("\t\t\t\t     The Assessment schedule on ["+ assm_deadline + "]")
+                                    print()
+                                    print("\t\t\t\t\t\t\tConfirm ?")
+                                    print()
+                                    print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
+                                    k = readkey()
+                                    while k != key.ENTER and k != key.ESC:
+                                        k = readkey()
+                                    os.system("cls")
+                                    if k == key.ENTER:
+                                        global assm
+                                        assm = assm + [0]
+                                        assm[len(assm) - 1] = assm_deadline
+                                        update_assm(assm)
+                                        schedule_function()
+                                        back1 = True
+                                        back2 = True
+                                        back3 = True
+                                        back4 = True
+                                    elif k == key.ESC:
+                                        pass
 #---------------------------------------------------------------------------------
 def del_assms():
     selected_del_assm = choose_del_assm()
@@ -1002,48 +1077,8 @@ def show_all_assms():
                 leave = True
     schedule_function()
 #---------------------------------------------------------------------------------
-def choose_month():
-    leave = False
-    month = 1
-    month_list = ["[1] January","[2] Feburary","[3] March","[4] April","[5] May","\t[6] June\n\n","\t[7] July","[8] August","[9] September","[10] October","[11] November","[12] December"]
-    while not leave:
-        date()
-        print("\t\t\t\tSelect and Confirm the Month You want to Schedule The Assessment")
-        print()
-        print("\t\t", end = "")
-        for x in range(len(month_list)):
-            if x+1 != month:
-                print(month_list[x], end = "\t")
-            else:
-                print(Fore.RED + month_list[x] + Style.RESET_ALL, end = "\t")
-        for x in range(17):
-            print()
-        print("                                           <UP>")
-        print()
-        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
-        print()
-        print("                                          <DOWN>")
-        k = readkey()
-        while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
-            k = readkey()
-        os.system("cls")
-        if k == key.UP and month > 6:
-            month -= 6
-        elif k == key.DOWN and month < 7:
-            month += 6
-        elif k == key.LEFT and month > 1:
-            month -= 1
-        elif k == key.RIGHT and month < len(month_list):
-            month += 1
-        elif k == key.ENTER:
-            return month
-        elif k == key.ESC:
-            leave = True
-            schedule_function()
-#---------------------------------------------------------------------------------
 def choose_subject():
     leave = False
-    subject_num = 1
     row = 0
     col = 0
     subject_list = ["CHIN","ENG","MATH","CSD","CHIS","CLIT","HIST","PHY","M1"],["BIO","GEOG","ICT","ECON","BAFS","VA","MUSIC","CHEM","M2"]
@@ -1071,23 +1106,30 @@ def choose_subject():
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.UP and row == 1:
-            subject_num -= 8
-            row -= 1
-        elif k == key.DOWN and row == 0:
-            subject_num += 8
-            row += 1
-        elif k == key.LEFT and col > 0:
-            subject_num -= 1
-            col -= 1
-        elif k == key.RIGHT and col < 8:
-            subject_num += 1
-            col += 1
+        if k == key.UP and row <= 1:
+            if row-1 < 0:
+                row = 1
+            else:
+                row = 0
+        elif k == key.DOWN and row >= 0:
+            if row+1 > 1:
+                row = 0
+            else:
+                row = 1
+        elif k == key.LEFT and col >= 0:
+            if col-1 < 0:
+                col = 8
+            else:
+                col -= 1
+        elif k == key.RIGHT and col <= 8:
+            if col+1 > 8:
+                col = 0
+            else:
+                col += 1
         elif k == key.ENTER:
             return subject_list[row][col]
         elif k == key.ESC:
             leave = True
-            schedule_function()
 #---------------------------------------------------------------------------------
 def choose_assm_type():
     leave = False
@@ -1111,15 +1153,80 @@ def choose_assm_type():
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and type_num > 1:
-            type_num -= 1
-        elif k == key.RIGHT and type_num < len(type_list):
-            type_num += 1
+        if k == key.LEFT and type_num >= 1:
+            if type_num-1 < 1:
+                type_num = len(type_list)
+            else:
+                type_num -= 1
+        elif k == key.RIGHT and type_num <= len(type_list):
+            if type_num+1 > len(type_list):
+                type_num = 1
+            else:
+                type_num += 1
         elif k == key.ENTER:
             return type_list[type_num-1]
         elif k == key.ESC:
             leave = True
-            schedule_function()
+#---------------------------------------------------------------------------------
+def choose_month():
+    leave = False
+    row = 1
+    col = 1
+    month = 1
+    month_list = ["[1] January","[2] Feburary","[3] March","[4] April","[5] May","\t[6] June\n\n","\t[7] July","[8] August","[9] September","[10] October","[11] November","[12] December"]
+    while not leave:
+        date()
+        print("\t\t\t\tSelect And Confirm The Month You Want To Schedule The Assessment")
+        print()
+        print("\t\t", end = "")
+        for x in range(len(month_list)):
+            if x+1 != month:
+                print(month_list[x], end = "\t")
+            else:
+                print(Fore.RED + month_list[x] + Style.RESET_ALL, end = "\t")
+        for x in range(17):
+            print()
+        print("                                           <UP>")
+        print()
+        print("                                    <LEFT>      <RIGHT>      <ENTER> Confirm      <ESC> Back")
+        print()
+        print("                                          <DOWN>")
+        k = readkey()
+        while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
+            k = readkey()
+        os.system("cls")
+        if k == key.UP and row >= 1:
+            if row-1 < 1:
+                row = 2
+                month += 6
+            else:
+                row = 1
+                month -= 6
+        elif k == key.DOWN and row <= 2:
+            if row+1 > 2:
+                row = 1
+                month -= 6
+            else:
+                row = 2
+                month += 6
+        elif k == key.LEFT and col >= 1:
+            if col-1 < 1:
+                col = 6
+                month += 5
+            else:
+                col -= 1
+                month -= 1
+        elif k == key.RIGHT and col <= 6:
+            if col+1 > 6:
+                col = 1
+                month -= 5
+            else:
+                col += 1
+                month += 1
+        elif k == key.ENTER:
+            return month
+        elif k == key.ESC:
+            leave = True
 #---------------------------------------------------------------------------------
 def choose_deadline(month):
     global schedule_year
@@ -1187,7 +1294,6 @@ def choose_deadline(month):
                 return day_num
         elif k == key.ESC:
             leave = True
-            schedule_function()
 #---------------------------------------------------------------------------------
 def setting_function(): # To open setting function
     os.system("cls")
@@ -1229,10 +1335,16 @@ def resetpw_function(): # To reset password
             resetpw_function()
         else:
             new_pw = input("Enter the New Password: ".rjust(64))
+            new_pw = encrypted_pw(new_pw)
             if new_pw == "":
                 setting_function()
+            elif new_pw == old_pw:
+                os.system("cls")
+                print("The Password Should Not Be Same.".rjust(70))
+                resetpw_function()
             else:
                 re_enter_pw = input("Enter the New Password again: ".rjust(70))
+                re_enter_pw = encrypted_pw(re_enter_pw)
                 if re_enter_pw == "":
                     setting_function()
                 else:
@@ -1243,7 +1355,6 @@ def resetpw_function(): # To reset password
                     else:
                         pw_ok = pw_check(new_pw)
                         if pw_ok == True:
-                            new_pw = encrypted_pw(new_pw)
                             password[password_index] = new_pw
                             update_password()
                             login_name, password = get_data()
@@ -1279,10 +1390,16 @@ def admin_resetpw_function(): # To reset password
             admin_resetpw_function()
         else:
             new_pw = input("Enter the New Password: ".rjust(64))
+            new_pw = encrypted_pw(new_pw)
             if new_pw == "":
                 admin_function()
+            elif new_pw == old_pw:
+                os.system("cls")
+                print("The Password Should Not Be Same.".rjust(70))
+                resetpw_function()
             else:
                 re_enter_pw = input("Enter the New Password again: ".rjust(70))
+                re_enter_pw = encrypted_pw(re_enter_pw)
                 if re_enter_pw == "":
                     admin_function()
                 else:
@@ -1293,7 +1410,6 @@ def admin_resetpw_function(): # To reset password
                     else:
                         pw_ok = pw_check(new_pw)
                         if pw_ok == True:
-                            new_pw = encrypted_pw(new_pw)
                             password[password_index] = new_pw
                             update_password()
                             for x in range(10):
@@ -1395,4 +1511,4 @@ while True:	# main program
     else:
         break
 
-#55%
+#56%
