@@ -288,7 +288,7 @@ def add_class(index):
                     date()
                     for i in range(10):
                         print()
-                    print("                                            Do you want to Assign More? ")
+                    print("                                        "+ selected_class +" Assigned. Do you want to Assign More? ")
                     print()
                     print("                                         <ENTER> Continue       <ESC> Back")
                     k = readkey()
@@ -685,36 +685,161 @@ def teachers_system(): # teachers accounts
         return
 #---------------------------------------------------------------------------------
 def choose_class():
-    date()
+    total_page_num = (len(class_list[username_index])//8)+1
+    page_num = 1
+    start_num = 0
     if class_list[username_index][0] != "Not yet Assigned":
+        leave = False
         global selected_class
         class_group = [0] * len(class_list[username_index])
-        print("                                                Please Select the Class")
-        for y in range(10-len(class_group)):
-            print()
-        for x in range(len(class_list[username_index])):
-            class_group[x] = class_list[username_index][x]
-            print("                                                       <" + str(x + 1) + "> " + class_group[x])
-            print()
-        print("                                                      <ESC> Leave")
-        while True:
-            k = readkey()
-            if k.isnumeric(): # check if k is integers
-                k = int(k)
-                if k < 1 or k > len(class_group):
-                    pass
+        while not leave:
+            date()
+            if total_page_num == 1:
+                print("                                                Please Select the Class")
+                for y in range(10-len(class_group)):
+                    print()
+                for x in range(len(class_list[username_index])):
+                    class_group[x] = class_list[username_index][x]
+                    print("                                                       <" + str(x + 1) + "> " + class_group[x])
+                    print()
+                print("                                                      <ESC> Leave")
+                while True:
+                    k = readkey()
+                    if k.isnumeric(): # check if k is integers
+                        k = int(k)
+                        if k < 1 or k > len(class_group):
+                            pass
+                        else:
+                            break # it will break when k is between a range(e.g. 1-3)
+                    elif k != key.ESC:
+                        pass
+                    else:
+                        break # it will break when key is ESC
+                if k == key.ESC:
+                    leave = True
+                    teachers_system()
                 else:
-                    break # it will break when k is between a range(e.g. 1-3)
-            elif k != key.ESC:
-                pass
+                    leave = True
+                    selected_class = class_group[k-1]
+                    schedule_function()
+            elif page_num > 1 and page_num < total_page_num:
+                num = 0
+                print("                                                Please Select the Class")
+                for y in range(2):
+                    print()
+                for x in range(start_num, page_num*8):
+                    num += 1
+                    class_group[x] = class_list[username_index][x]
+                    print("                                                       <" + str(num) + "> " + class_group[x])
+                    print()
+                print("                                         <LEFT> Previous Page      <ESC> Leave")
+                while True:
+                    k = readkey()
+                    if k.isnumeric(): # check if k is integers
+                        k = int(k)
+                        if k < 1 or k > num:
+                            pass
+                        else:
+                            break # it will break when k is between a range(e.g. 1-3)
+                    elif k == key.ESC:
+                        break
+                    elif k == key.LEFT:
+                        break
+                    elif k == key.RIGHT:
+                        break
+                    else:
+                        pass
+                if k == key.LEFT:
+                    page_num -= 1
+                    start_num -= 8
+                    os.system("cls")
+                elif k == key.RIGHT:
+                    page_num += 1
+                    start_num += 8
+                    os.system("cls")
+                elif k == key.ESC:
+                    leave = True
+                    teachers_system()
+                else:
+                    leave = True
+                    selected_class = class_group[(page_num-1)*8+k-1]
+                    schedule_function()
+            elif page_num == total_page_num:
+                num = 0
+                row_num = 0
+                print("                                                Please Select the Class")
+                for y in range(2):
+                    print()
+                for x in range(start_num, len(class_group)):
+                    num += 1
+                    class_group[x] = class_list[username_index][x]
+                    print("                                                       <" + str(num) + "> " + class_group[x])
+                    print()
+                    row_num += 2
+                for y in range(16-row_num):
+                    print()
+                print("                                         <LEFT> Previous Page      <ESC> Leave")
+                while True:
+                    k = readkey()
+                    if k.isnumeric(): # check if k is integers
+                        k = int(k)
+                        if k < 1 or k > num:
+                            pass
+                        else:
+                            break # it will break when k is between a range(e.g. 1-3)
+                    elif k == key.ESC:
+                        break
+                    elif k == key.LEFT:
+                        break
+                    else:
+                        pass
+                if k == key.LEFT:
+                    page_num -= 1
+                    start_num -= 8
+                    os.system("cls")
+                elif k == key.ESC:
+                    leave = True
+                    teachers_system()
+                else:
+                    leave = True
+                    selected_class = class_group[(page_num-1)*8+k-1]
+                    schedule_function()
             else:
-                break # it will break when key is ESC
-        if k == key.ESC:
-            teachers_system()
-        else:
-            selected_class = class_group[k-1]
-            schedule_function()
+                print("                                                Please Select the Class")
+                for y in range(2):
+                    print()
+                for x in range(8):
+                    class_group[x] = class_list[username_index][x]
+                    print("                                                       <" + str(x + 1) + "> " + class_group[x])
+                    print()
+                print("                                          <RIGHT> Next Page      <ESC> Leave")
+                while True:
+                    k = readkey()
+                    if k.isnumeric(): # check if k is integers
+                        k = int(k)
+                        if k < 1 or k > 8:
+                            pass
+                        else:
+                            break # it will break when k is between a range(e.g. 1-3)
+                    elif k == key.ESC:
+                        break
+                    elif k == key.RIGHT:
+                        break
+                    else:
+                        pass
+                if k == key.RIGHT:
+                    page_num += 1
+                    start_num += 8
+                    os.system("cls")
+                elif k == key.ESC:
+                    leave = True
+                    teachers_system()
+                else:
+                    leave = True
+                    selected_class = class_group[k-1]
+                    schedule_function()
     else:
+        date()
         for i in range(10):
             print()
         print("                                               Class Not yet Assigned.")
@@ -727,6 +852,7 @@ def schedule_function(): # To open schedule system function
     global assm
     os.system("cls")
     date()
+    print(selected_class)
     assm = get_assm()
     display_assm()
     if len(assm) == 0:
