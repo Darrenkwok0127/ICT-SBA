@@ -16,7 +16,6 @@ def get_date():
     current_month = current.strftime("%m")
     current_year = current.strftime("%Y")
     next_year = int(current_year) + 1
-    
 #-------------------------------------------------------------------------------------------------------
 def system_name(): # Output the title 
     print(" █████╗  ██████╗ ██████╗███████╗ ██████╗ ██████╗███╗   ███╗███████╗███╗  ██╗████████╗".rjust(105))
@@ -37,24 +36,31 @@ def main_menu():
     os.system("cls")
     date()
     system_name()
-    for i in range(4):
-        print()
-    print("<ENTER> Login ".rjust(64))
     print()
-    print("<ESC>  Exit ".rjust(63))
+    print()
+    print()
+    print("                                                  <1>  Login")
+    print()
+    print("                                                  <2>  Forget Password")
+    print()
+    print("                                                 <ESC> Exit")
     k = readkey() # reading keyboard input
-    while k != key.ENTER and k != key.ESC:
+    while k != "1" and k != "2" and k != key.ESC:
         k = readkey()
-    if k == key.ENTER: # When user press "ENTER", it goes into login system
+    if k == "1": # When user press "1", it goes into login system
         os.system("cls")
         date()
         system_name()
         login_name, password = get_data()
         print()
         print()
-        return True
-    elif k == key.ESC: # When user press "2", it exits the program
-        return False
+        return k
+    elif k == "2": # When user press "2", it goes into forget password function
+        os.system("cls")
+        login_name, password = get_data()
+        return k
+    elif k == key.ESC: # When user press "ESC", it exits the program
+        return "3"
 #---------------------------------------------------------------------------------
 def linear_search(arr, target): # To search if the target exists(e.g. teachers account)
     found = False
@@ -120,6 +126,22 @@ def get_adminpw_data(): # Getting administrator password data from text file
     for i in range(len(a_pw)):
         a_pw[i] = a_pw[i].strip()
     return a_pw
+#---------------------------------------------------------------------------------
+def get_request():
+    f = open("forgetpw_request.txt", "r")
+    rq = f.readlines()
+    f.close()
+    for i in range(len(rq)):
+        rq[i] = rq[i].strip("\n")
+    return rq
+#---------------------------------------------------------------------------------
+def get_defaultpw():
+    f = open("default_password.txt", "r")
+    df = f.readlines()
+    f.close()
+    for i in range(len(df)):
+        df[i] = df[i].strip("\n")
+    return df
 #---------------------------------------------------------------------------------
 def login(counting):
     global username_index, password_index
@@ -187,20 +209,80 @@ def login(counting):
         print()
         login(counting)
 #---------------------------------------------------------------------------------
+def forget_pw():
+    global request
+    request = get_request()
+    print()
+    print()
+    print("                                                  Forget your password? ")
+    print()
+    inp_name = input("                                        Please Enter your Username: ")
+    if inp_name == "":
+        return
+    else:
+        isadmin1, username_index = search_admin(login_name, inp_name)
+        if isadmin1:
+            check = False
+        else:
+            check, username_index = linear_search(login_name, inp_name)
+            found, temp = linear_search(request, str(username_index))
+        if check and not found:
+            os.system("cls")
+            date()
+            system_name()
+            request = request + [username_index]
+            update_forgetpw_request()
+            print()
+            print()
+            print()
+            print("                                               Reset Password Request Sent")
+            print()
+            print("                                 Administrator Will Reset Your Password To Default ASAP")
+            print()
+            print("                                               Press <ANY KEY> To Continue")
+            readkey()
+        elif found:
+            os.system("cls")
+            date()
+            system_name()
+            print()
+            print()
+            print()
+            print("                                                  Reset Request Pending")
+            print()
+            print("                                          Please Wait For Administrator to Reset")
+            print()
+            print("                                                Press <ANY KEY> To Return")
+            readkey()
+        else:
+            os.system("cls")
+            date()
+            system_name()
+            print("                                         Username Not Found. Please Enter Again.")
+            forget_pw()
+#---------------------------------------------------------------------------------
 def admin_system(): # admin account
+    global default_pw, request
+    request = get_request()
+    default_pw = get_defaultpw()
     os.system("cls")
     date()
     print("\t\t\t\t\t\t    Welcome Back." , login_name[username_index])
     for x in range(8):
         print()
-    print("\t\t\t\t        <1>  Teachers Class Information")
+    print("                                        <1>  Teachers Class Information")
     print()
-    print("\t\t\t\t        <2>  Settings (Administrator)")
+    print("                                        <2>  Settings (Administrator)")
+    print()
+    if len(request) == 0:
+        print("                                        <3>  Reset Password Request")
+    else:
+        print("                                        <3>" + Fore.RED + "  Reset Password Request *", Style.RESET_ALL)
     print()
     print("\t\t\t\t       <ESC> Sign Out")
     print()
     k = readkey()
-    while k != "1" and k != "2" and k != key.ESC:
+    while k != "1" and k != "2" and k != "3" and k != key.ESC:
         k = readkey()
     if k == "1":
         os.system("cls")
@@ -208,6 +290,8 @@ def admin_system(): # admin account
         teachers_info_function()
     elif k == "2":
         admin_function()
+    elif k == "3":
+        reset_request()
     elif k == key.ESC:
         return
 #---------------------------------------------------------------------------------
@@ -470,20 +554,18 @@ def admin_function():
     os.system("cls")
     date()
     print("\t\t\t\t\t\t   Administrator Setting")
-    for x in range(8):
+    for x in range(9):
         print()
     print("\t\t\t\t         <1>  Reset Password")
     print()
-    print("\t\t\t\t         <2>  Find Password")
+    print("\t\t\t\t         <2>  Create Account")
     print()
-    print("\t\t\t\t         <3>  Create Account")
-    print()
-    print("\t\t\t\t         <4>  Delete Account")
+    print("\t\t\t\t         <3>  Delete Account")
     print()
     print("\t\t\t\t        <ESC> Back")
     print()
     k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != "4" and k != key.ESC:
+    while k != "1" and k != "2" and k != "3" and k != key.ESC:
         k = readkey()
     os.system("cls")
     if k == "1":
@@ -491,62 +573,15 @@ def admin_function():
         admin_resetpw_function()
     elif k == "2":
         print()
-        find_pw_function()
-    elif k == "3":
-        print()
         create_acc_function()
-    elif k == "4":
+    elif k == "3":
         print()
         delete_acc_function()
     elif k == key.ESC:
         admin_system()
 #---------------------------------------------------------------------------------
-def find_pw_function():
-    global login_name, password
-    temp = 0
-    date()
-    login_name, password = get_data()
-    admin_pw = get_adminpw_data()
-    print("<Empty input> Exit".rjust(65))
-    print()
-    input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
-    print()
-    if input_admin_pw == "":
-        admin_function()
-    else:
-        input_admin_pw = encrypted_pw(input_admin_pw)
-        if input_admin_pw != admin_pw[0]:
-            os.system("cls")
-            print("Administrator Password Incorrect.".rjust(75))
-            find_pw_function()
-        else:
-            found = False
-            while not(found):
-                if temp > 0:
-                    print("<Empty input> Exit".rjust(65))
-                    print()
-                input_accname = input("Enter the Account Username: ".rjust(58))
-                if input_accname == "":
-                    admin_function()
-                    break
-                else:
-                    check, index_user = linear_search(login_name, input_accname)
-                    if check:
-                        found = True
-                        target_pw = decrypted_pw(password[index_user])
-                        for i in range(8):
-                            print()
-                        print("\t\t\t\t\t", login_name[index_user], "'s password is \"" + target_pw + "\"")
-                        input("Press <ENTER> To Exit".rjust(65))
-                        admin_function()
-                    else:
-                        os.system("cls")
-                        print("                                         Username not found. Please try it again")
-                        date()
-                        temp += 1
-#---------------------------------------------------------------------------------
 def create_acc_function(): # To create a new teacher account
-    global login_name, password, class_list
+    global login_name, password, default_pw, class_list
     pw_ok = False
     found = False
     date()
@@ -592,21 +627,22 @@ def create_acc_function(): # To create a new teacher account
                         pw_ok = pw_check(add_password)
                         if pw_ok:
                             found = True
-                            login_name = login_name + [0]
-                            password = password + [0]
-                            class_list = class_list + [["Not yet Assigned"]]
                             add_password = encrypted_pw(add_password)
-                            login_name[len(login_name)-1] = add_username
-                            password[len(password)-1] = add_password
+                            login_name = login_name + [add_username]
+                            password = password + [add_password]
+                            default_pw = default_pw + [add_password]
+                            class_list = class_list + [["Not yet Assigned"]]
                             update_username()
                             update_password()
+                            update_defaultpw()
                             update_class()
                             os.system("cls")
                             for x in range(12):
                                 print()
                             print("\t\t\t\t\t         SIGN UP SUCCESSFUL")
                             print()
-                            input("\t\t\t\t\t       Press <ENTER> To Exit")
+                            print("\t\t\t\t\t       Press <ANY KEY> To Exit")
+                            readkey()
                             admin_function()
                         else:
                             os.system("cls")
@@ -644,9 +680,11 @@ def delete_acc_function(): # To delete teachers' account
                         found = True
                         del login_name[index_user]
                         del password[index_user]
+                        del default_pw[index_user]
                         del class_list[index_user]
                         update_username()
                         update_password()
+                        update_defaultpw()
                         update_class()
                         os.system("cls")
                         for i in range(12):
@@ -661,6 +699,63 @@ def delete_acc_function(): # To delete teachers' account
                         os.system("cls")
                         print("                                    Username not found / Invalid. Please try it again")
                         date()
+#---------------------------------------------------------------------------------
+def reset_request():
+    leave = False
+    select_index = 1
+    while not leave:
+        os.system("cls")
+        date()
+        if len(request) == 0:
+            leave = True
+            for i in range(8):
+                print()
+            print("                                     There is no reset password request from teachers")
+            print()
+            print("                                               Press <ANY KEY> To Return")
+            readkey()
+            admin_system()
+        else:
+            if len(request) < 5:
+                current_req = [''] * len(request)
+                for i in range(len(request)):
+                    current_req[i] = request[i]
+            else:
+                current_req = [''] * 5
+                for i in range(5):
+                    current_req[i] = request[i]
+            print("                                                  Reset Request From:")
+            for x in range(8):
+                print()
+            for i in range(len(current_req)):
+                if i+1 != select_index:
+                    print("                                                       "+ login_name[int(current_req[i])])
+                else:
+                    print("                                                       "+ Fore.RED + login_name[int(current_req[i])] + Style.RESET_ALL)
+                print()
+            k = readkey()
+            while k != key.UP and k != key.DOWN and k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.UP and select_index >= 1:
+                select_index -= 1
+                if select_index == 0:
+                    select_index = len(current_req)
+            elif k == key.DOWN and select_index <= len(current_req):
+                select_index += 1
+                if select_index > len(current_req):
+                    select_index = 1
+            elif k == key.ENTER:
+                deafult_pw = get_defaultpw()
+                password[int(current_req[select_index-1])] = deafult_pw[int(current_req[select_index-1])]
+                del request[select_index-1]
+                update_password()
+                update_forgetpw_request()
+                print("                                               Password Reset Successful.")
+                readkey()
+                select_index = 1
+            elif k == key.ESC:
+                leave = True
+                admin_system()
 #---------------------------------------------------------------------------------
 def teachers_system(): # teachers accounts
     os.system("cls")
@@ -685,7 +780,7 @@ def teachers_system(): # teachers accounts
         return
 #---------------------------------------------------------------------------------
 def choose_class():
-    total_page_num = (len(class_list[username_index])//8)+1
+    total_page_num = -(-len(class_list[username_index])//8)
     page_num = 1
     start_num = 0
     if class_list[username_index][0] != "Not yet Assigned":
@@ -732,7 +827,7 @@ def choose_class():
                     class_group[x] = class_list[username_index][x]
                     print("                                                       <" + str(num) + "> " + class_group[x])
                     print()
-                print("                                         <LEFT> Previous Page      <ESC> Leave")
+                print("                               <LEFT> Previous Page      <RIGHT> Next Page      <ESC> Leave")
                 while True:
                     k = readkey()
                     if k.isnumeric(): # check if k is integers
@@ -852,7 +947,7 @@ def schedule_function(): # To open schedule system function
     global assm
     os.system("cls")
     date()
-    print(selected_class)
+    print("       Class: " + selected_class)
     assm = get_assm()
     display_assm()
     if len(assm) == 0:
@@ -996,7 +1091,7 @@ def del_assms():
             del_assms()
 #---------------------------------------------------------------------------------
 def choose_del_assm():
-    total_page_num = (len(assm)//10)+1
+    total_page_num = -(-len(assm)//10)
     leave = False
     start_num = 0
     page_num = 1
@@ -1126,7 +1221,7 @@ def choose_del_assm():
 #---------------------------------------------------------------------------------
 def show_all_assms():
     blank_line = 0
-    total_page_num = (len(assm)//11)+1
+    total_page_num = -(-len(assm)//11)
     leave = False
     start_num = 0
     page_num = 1
@@ -1490,8 +1585,8 @@ def resetpw_function(): # To reset password
                             print()
                             print("Please Login Again".rjust(65))
                             print()
-                            input("Press <ENTER> to continue.".rjust(69))
-                            
+                            print("Press <ANY KEY> to continue.".rjust(69))
+                            readkey()
                         else:
                             print("The New Password Does Not Meet Requirements".rjust(77))
                             resetpw_function()
@@ -1544,8 +1639,8 @@ def admin_resetpw_function(): # To reset password
                             print()
                             print("Please Login Again".rjust(65))
                             print()
-                            input("Press <ENTER> to continue.".rjust(69))
-                            
+                            input("Press <ANY KEY> to continue.".rjust(69))
+                            readkey()
                         else:
                             print("The New Password Does Not Meet Requirements".rjust(77))
                             admin_resetpw_function()
@@ -1629,12 +1724,33 @@ def update_class():
                 f.write(class_list[i][j] + "")
     f.close()
 #---------------------------------------------------------------------------------
+def update_forgetpw_request():
+    f = open("forgetpw_request.txt", "w")
+    for i in range(len(request)):
+        if i < len(request) - 1:
+            f.write(str(request[i]) + "\n")
+        else:
+            f.write(str(request[i]) + "")
+#---------------------------------------------------------------------------------
+def update_defaultpw():
+    f = open("default_password.txt", "w")
+    for i in range(len(default_pw)):
+        if i < len(default_pw) - 1:
+            f.write(default_pw[i] + "\n")
+        else:
+            f.write(default_pw[i] + "")
+#---------------------------------------------------------------------------------
 while True:	# main program
     login_or_not = main_menu()
-    if login_or_not:
+    if login_or_not == "1":
         count = 0
         login(count)
-    else:
+    elif login_or_not == "2":
+        date()
+        system_name()
+        print()
+        forget_pw()
+    elif login_or_not == "3":
         break
 
-#56%
+#57%
