@@ -708,7 +708,7 @@ def reset_request():
         date()
         if len(request) == 0:
             leave = True
-            for i in range(8):
+            for i in range(11):
                 print()
             print("                                     There is no reset password request from teachers")
             print()
@@ -716,6 +716,7 @@ def reset_request():
             readkey()
             admin_system()
         else:
+            row_num = 0
             if len(request) < 5:
                 current_req = [''] * len(request)
                 for i in range(len(request)):
@@ -725,7 +726,7 @@ def reset_request():
                 for i in range(5):
                     current_req[i] = request[i]
             print("                                                  Reset Request From:")
-            for x in range(8):
+            for x in range(6):
                 print()
             for i in range(len(current_req)):
                 if i+1 != select_index:
@@ -733,6 +734,10 @@ def reset_request():
                 else:
                     print("                                                       "+ Fore.RED + login_name[int(current_req[i])] + Style.RESET_ALL)
                 print()
+                row_num += 2
+            for j in range(18-row_num):
+                print()
+            print("                                   <UP>      <DOWN>      <ENTER> Confirm      <ESC> Back")
             k = readkey()
             while k != key.UP and k != key.DOWN and k != key.ENTER and k != key.ESC:
                 k = readkey()
@@ -745,14 +750,41 @@ def reset_request():
                 if select_index > len(current_req):
                     select_index = 1
             elif k == key.ENTER:
-                deafult_pw = get_defaultpw()
-                password[int(current_req[select_index-1])] = deafult_pw[int(current_req[select_index-1])]
-                del request[select_index-1]
-                update_password()
-                update_forgetpw_request()
-                print("                                               Password Reset Successful.")
-                readkey()
-                select_index = 1
+                os.system("cls")
+                date()
+                for i in range(12):
+                    print()
+                print("                                        Reset User's [" + login_name[int(current_req[select_index-1])] + "] Password to Default?")
+                print()
+                print("                                 <ENTER> Accept      <BACKSPACE> Decline      <ESC> Back")
+                k = readkey()
+                while k != key.ENTER and k != key.BACKSPACE and k != key.ESC:
+                    k = readkey()
+                if k == key.ENTER:
+                    os.system("cls")
+                    deafult_pw = get_defaultpw()
+                    password[int(current_req[select_index-1])] = deafult_pw[int(current_req[select_index-1])]
+                    del request[select_index-1]
+                    update_password()
+                    update_forgetpw_request()
+                    date()
+                    for i in range(10):
+                        print()
+                    print("                                               Password Reset Successful.")
+                    print()
+                    print("                                               Press <ANY KEY> To Return")
+                    readkey()
+                    select_index = 1
+                elif k == key.BACKSPACE:
+                    os.system("cls")
+                    del request[select_index-1]
+                    update_forgetpw_request()
+                    date()
+                    print("                                                   Request Declined")
+                    print()
+                    print("                                               Press <ANY KEY> To Return")
+                elif k == key.ESC:
+                    None
             elif k == key.ESC:
                 leave = True
                 admin_system()
@@ -951,16 +983,16 @@ def schedule_function(): # To open schedule system function
     assm = get_assm()
     display_assm()
     if len(assm) == 0:
-        print("                                              <1> Schedule Assessments")
+        print("                                                  <1>  Schedule Assessments")
         print()
-        print("                                              <ESC> Back")
+        print("                                                 <ESC> Back")
         k = readkey()
         while k != "1" and k != key.ESC:
             k = readkey()
     else:
-        print("                        <1> Schedule Assessments                 <2>  Delete Assessments")
+        print("                             <1> Schedule Assessments                 <2>  Delete Assessments")
         print()
-        print("                        <3> Show All Assessments                <ESC> Back")
+        print("                             <3> Show All Assessments                <ESC> Back")
         k = readkey()
         while k != "1" and k != "2" and k != "3" and k != key.ESC:
             k = readkey()
@@ -976,7 +1008,7 @@ def schedule_function(): # To open schedule system function
 #---------------------------------------------------------------------------------
 def display_assm():
     if len(assm) == 0:
-        print("\t\t\t\t\tThere are no asseessments assigned.")
+        print("                                          There is no asseessment assigned.")
         for x in range(22):
             print()
     else:
@@ -987,13 +1019,13 @@ def display_assm():
         while k < len(assm) and k < len(display):
             display[k] = assm[k]
             k += 1
-        print("\t\t\t\tThe Most Recent Assessments Scheduled Shown Below")
+        print("                                     The Most Recent Assessments Scheduled Shown Below")
         print()
         for i in range(len(display)):
             if num % 2 != 0:
-                print("\t\t\t", display[i], end = "")
+                print("\t\t\t    ", display[i], end = "")
             else:
-                print("\t\t\t", display[i], end = "\n\n")
+                print("\t\t\t    ", display[i], end = "\n\n")
                 row_num += 1
             num += 1
         if k == len(display) and len(assm) > len(display):
@@ -1086,7 +1118,7 @@ def del_assms():
         if k == key.ENTER:
             del assm[selected_del_assm-1]
             update_assm(assm)
-            schedule_function()
+            del_assms()
         elif k == key.ESC:
             del_assms()
 #---------------------------------------------------------------------------------
