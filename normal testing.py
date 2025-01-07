@@ -1,4 +1,11 @@
-import calendar
-month_day = calendar.monthcalendar(2024, 12)
-
-print(len(month_day))
+def start():
+    print("Hello")
+    second()
+def second():
+    i = input(": ")
+    if i == "1":
+        return second()
+    else:
+        return
+    print("Hello")
+start()
