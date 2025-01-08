@@ -146,7 +146,7 @@ def get_defaultpw(): # Getting deafault password from default
     return df
 #---------------------------------------------------------------------------------
 def get_assm():
-    f = open(selected_class + "_assessments.txt", "r")
+    f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "r")
     a = f.readlines()
     f.close()
     for i in range(len(a)):
@@ -173,6 +173,8 @@ def login(): # Login Page
             admin1, username_index = search_admin(login_name, input_username) # Search for admin username
             if admin1: # When admin username found, check if admin password is correct
                 admin2, password_index = search_admin(password, input_password) # Search for admin password
+                check1 = False
+                check2 = False
             else:
                 check1, username_index = linear_search(login_name, input_username)
                 if username_index != None and password[username_index] == input_password:
@@ -815,10 +817,9 @@ def choose_class():
     page_num = 1
     start_num = 0
     if class_list[username_index][0] != "Not yet Assigned":
-        leave = False
-        global selected_class
+        global selected_class, form
         class_group = [0] * len(class_list[username_index])
-        while not leave:
+        while True:
             date()
             if total_page_num == 1:
                 print("                                                Please Select the Class")
@@ -842,11 +843,13 @@ def choose_class():
                     else:
                         break # it will break when key is ESC
                 if k == key.ESC:
-                    leave = True
                     return teachers_system()
                 else:
-                    leave = True
                     selected_class = class_group[k-1]
+                    if int(selected_class[:1]) <= 3:
+                        form = "Junior"
+                    else:
+                        form = "Senior"
                     return schedule_function()
             elif page_num > 1 and page_num < total_page_num:
                 num = 0
@@ -884,11 +887,13 @@ def choose_class():
                     start_num += 8
                     os.system("cls")
                 elif k == key.ESC:
-                    leave = True
                     return teachers_system()
                 else:
-                    leave = True
                     selected_class = class_group[(page_num-1)*8+k-1]
+                    if int(selected_class[:1]) <= 3:
+                        form = "Junior"
+                    else:
+                        form = "Senior"
                     return schedule_function()
             elif page_num == total_page_num:
                 num = 0
@@ -924,11 +929,13 @@ def choose_class():
                     start_num -= 8
                     os.system("cls")
                 elif k == key.ESC:
-                    leave = True
                     return teachers_system()
                 else:
-                    leave = True
                     selected_class = class_group[(page_num-1)*8+k-1]
+                    if int(selected_class[:1]) <= 3:
+                        form = "Junior"
+                    else:
+                        form = "Senior"
                     return schedule_function()
             else:
                 print("                                                Please Select the Class")
@@ -958,11 +965,13 @@ def choose_class():
                     start_num += 8
                     os.system("cls")
                 elif k == key.ESC:
-                    leave = True
                     return teachers_system()
                 else:
-                    leave = True
                     selected_class = class_group[k-1]
+                    if int(selected_class[:1]) <= 3:
+                        form = "Junior"
+                    else:
+                        form = "Senior"
                     return schedule_function()
     else:
         date()
@@ -1008,7 +1017,7 @@ def schedule_function(): # To open schedule system function
 def display_assm():
     if len(assm) == 0:
         print("                                          There is no asseessment assigned.")
-        for x in range(22):
+        for x in range(21):
             print()
     else:
         display = [''] * 6
@@ -1716,7 +1725,7 @@ def update_password(): # update the password in text file
     f.close()
 #---------------------------------------------------------------------------------
 def update_assm(assm_list):
-    f = open(selected_class + "_assessments.txt", "w")
+    f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "w")
     for i in range(len(assm_list)):
         if i < len(assm_list) - 1:
             f.write(assm_list[i] + "\n")
@@ -1754,6 +1763,7 @@ def update_defaultpw():
 #---------------------------------------------------------------------------------
 while True:	# main program
     login_selection = main_menu()
+    path = os.getcwd()
     if login_selection == "1":
         login()
     elif login_selection == "2":
