@@ -152,12 +152,11 @@ def get_assm(): # Getting all assessments from text file
     for i in range(len(assm)):
         assm[i] = assm[i].strip("\n")
     bubble_sort(assm)
-    while len(assm) > 0:
-        if assm[0] < current_date:
-            get_assm_log()
-            assm_log.append(assm[0])
-            del assm[0]
-            update_assm_log()
+    while len(assm) > 0 and assm[0] < current_date:
+        get_assm_log()
+        assm_log.append(assm[0])
+        del assm[0]
+        update_assm_log()
     update_assm()
 #---------------------------------------------------------------------------------
 def get_assm_log(): # Getting assessments log from text file
@@ -275,7 +274,7 @@ def admin_system(): # Admin account
     get_defaultpw()
     os.system("cls")
     date()
-    print("\t\t\t\t\t\t    Welcome Back." , login_name[username_index])
+    print("                                                    Welcome Back." , login_name[username_index])
     for x in range(8):
         print()
     print("                                        <1>  Teachers Class Information")
@@ -803,26 +802,30 @@ def reset_request():
 def teachers_system(): # Teachers accounts
     os.system("cls")
     date()
-    print("\t\t\t\t\t\t    Welcome Back." , login_name[username_index])
+    print("                                                    Welcome Back." , login_name[username_index])
     for x in range(8):
         print()
-    print("\t\t\t\t        <1>  Schedule Assessments System")
+    print("                                        <1>  Schedule Assessments System")
     print()
-    print("\t\t\t\t        <2>  Settings")
+    print("                                        <2>  Settings")
     print()
-    print("\t\t\t\t       <ESC> Sign Out")
+    print("                                        <3>  Searching")
+    print()
+    print("                                       <ESC> Sign Out")
     k = readkey()
-    while k != "1" and k != "2" and k != key.ESC:
+    while k != "1" and k != "2" and k != "3" and k != key.ESC:
         k = readkey()
     os.system("cls")
     if k == "1":
-        return choose_class()
+        return choose_class(k)
     elif k == "2":
         return teacher_setting()
+    elif k == "3":
+        return choose_class(k)
     elif k == key.ESC:
         return
 #---------------------------------------------------------------------------------
-def choose_class(): # Select classes adding into teachers' account
+def choose_class(key_num): # Select classes adding into teachers' account
     total_page_num = -(-len(class_list[username_index])//8)
     page_num = 1
     start_num = 0
@@ -860,7 +863,10 @@ def choose_class(): # Select classes adding into teachers' account
                         form = "Junior"
                     else:
                         form = "Senior"
-                    return schedule_function()
+                    if key_num == "1":
+                        return schedule_function()
+                    else:
+                        return searching()
             elif page_num > 1 and page_num < total_page_num:
                 num = 0
                 print("                                                Please Select the Class")
@@ -904,7 +910,10 @@ def choose_class(): # Select classes adding into teachers' account
                         form = "Junior"
                     else:
                         form = "Senior"
-                    return schedule_function()
+                    if key_num == "1":
+                        return schedule_function()
+                    else:
+                        return searching()
             elif page_num == total_page_num:
                 num = 0
                 row_num = 0
@@ -946,7 +955,10 @@ def choose_class(): # Select classes adding into teachers' account
                         form = "Junior"
                     else:
                         form = "Senior"
-                    return schedule_function()
+                    if key_num == "1":
+                        return schedule_function()
+                    else:
+                        return searching()
             else:
                 print("                                                Please Select the Class")
                 for y in range(2):
@@ -982,7 +994,10 @@ def choose_class(): # Select classes adding into teachers' account
                         form = "Junior"
                     else:
                         form = "Senior"
-                    return schedule_function()
+                    if key_num == "1":
+                        return schedule_function()
+                    else:
+                        return searching()
     else:
         date()
         for i in range(10):
@@ -1021,7 +1036,7 @@ def schedule_function(): # To open schedule system function
     elif k == "3":
         return show_all_assms()
     elif k == key.ESC:
-        return choose_class()
+        return choose_class("1")
 #---------------------------------------------------------------------------------
 def display_assm(): # Display Assessments
     if len(assm) == 0:
@@ -1647,6 +1662,53 @@ def pw_range_check(pw2): # Check if the password consists of 8 characters (at le
             space = True
     return wl, cl, sl, number, space
 #---------------------------------------------------------------------------------
+def searching():
+    os.system("cls")
+    date()
+    print("                                                        Searching")
+    for i in range(10):
+        print()
+    print("                                   Please enter any words to search for assessments")
+    print()
+    inp_search = input("                                                      : ").upper()
+    inp_search = inp_search.replace(" ", "")
+    if inp_search == "":
+        return teachers_system()
+    else:
+        return search_assm(inp_search)
+#---------------------------------------------------------------------------------
+def search_assm(inp):
+    os.system("cls")
+    get_assm_log()
+    result = []
+    for i in range(len(assm_log)):
+        find = assm_log[i].find(inp)
+        if find == -1:
+            pass
+        else:
+            result.append(assm_log[i])
+    date()
+    print("                                                        Searching")
+    print()
+    if len(result) == 0:
+        print("                                         The search result for \"" + inp + "\" is as follow.")
+        print()
+        print("                                                    No assessment Found.")
+    else:    
+        print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
+        print()
+        for j in range(len(result)):
+            print("                                                    "+ result[j])
+    print()
+    print("                                         <ENTER> Search Again     <ESC> Return")
+    k = readkey()
+    while k != key.ENTER and k != key.ESC:
+        k = readkey()
+    if k == key.ENTER:
+        return searching()
+    elif k == key.ESC:
+        return teachers_system()
+#---------------------------------------------------------------------------------
 def encrypted_pw(pw): # To encrypted password(unencrypted)
     word = []
     temp = ""
@@ -1742,4 +1804,4 @@ while True:	# main program
     elif login_selection == "3":
         break
 
-#57%
+#64%
