@@ -58,7 +58,8 @@ def main_menu(): # main menu
         return k
     elif k == "2": # When user press "2", it goes into forget password function
         os.system("cls")
-        login_name, password = get_data()
+        get_data()
+        get_request()
         return k
     elif k == key.ESC: # When user press "ESC", it exits the program
         return "3"
@@ -219,7 +220,7 @@ def login(): # Login Page
             print()
 #---------------------------------------------------------------------------------
 def forget_pw(): # Forget Password
-    get_request()
+    global request
     print()
     print()
     print("                                                  Forget your password? ")
@@ -796,7 +797,6 @@ def reset_request():
                 elif k == key.ESC:
                     None
             elif k == key.ESC:
-                leave = True
                 return admin_system()
 #---------------------------------------------------------------------------------
 def teachers_system(): # Teachers accounts
@@ -1115,25 +1115,28 @@ def add_assms(): # Adding assessment
                 selected.pop()
 #---------------------------------------------------------------------------------
 def del_assms(): # Remove assessment and confirm / not
-    selected_del_assm = choose_del_assm()
-    if selected_del_assm != None:
-        for i in range(11):
+    if len(assm) != 0:
+        selected_del_assm = choose_del_assm()
+        if selected_del_assm != None:
+            for i in range(11):
+                print()
+            print("\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1] + "]")
             print()
-        print("\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1] + "]")
-        print()
-        print("\t\t\t\t\t\t\tConfirm ?")
-        print()
-        print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
-        k = readkey()
-        while k != key.ENTER and k != key.ESC:
-             k = readkey()
-        os.system("cls")
-        if k == key.ENTER:
-            del assm[selected_del_assm-1]
-            update_assm()
-            return del_assms()
-        elif k == key.ESC:
-            return del_assms()
+            print("\t\t\t\t\t\t\tConfirm ?")
+            print()
+            print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
+            k = readkey()
+            while k != key.ENTER and k != key.ESC:
+                 k = readkey()
+            os.system("cls")
+            if k == key.ENTER:
+                del assm[selected_del_assm-1]
+                update_assm()
+                return del_assms()
+            elif k == key.ESC:
+                return del_assms()
+    else:
+        return schedule_function()
 #---------------------------------------------------------------------------------
 def choose_del_assm(): # Select the assessment you want to remove
     total_page_num = -(-len(assm)//10)
@@ -1662,24 +1665,31 @@ def pw_range_check(pw2): # Check if the password consists of 8 characters (at le
             space = True
     return wl, cl, sl, number, space
 #---------------------------------------------------------------------------------
-def searching():
+def searching(): # Searching
+    get_assm_log()
     os.system("cls")
     date()
     print("                                                        Searching")
     for i in range(10):
         print()
-    print("                                   Please enter any words to search for assessments")
-    print()
-    inp_search = input("                                                      : ").upper()
-    inp_search = inp_search.replace(" ", "")
-    if inp_search == "":
-        return teachers_system()
+    if len(assm_log) != 0:
+        print("                                   Please enter any words to search for assessments")
+        print()
+        inp_search = input("                                                      : ").upper()
+        if inp_search == "":
+            os.system("cls")
+            return choose_class("3")
+        else:
+            return search_assm(inp_search)
     else:
-        return search_assm(inp_search)
+        print("                                             There are no assessments record")
+        print()
+        print("                                                Press <ANY KEY> To Return")
+        readkey()
+        os.system("cls")
+        return choose_class("3")
 #---------------------------------------------------------------------------------
-def search_assm(inp):
-    os.system("cls")
-    get_assm_log()
+def search_assm(inp): # To search assessments and show the result
     result = []
     for i in range(len(assm_log)):
         find = assm_log[i].find(inp)
@@ -1687,27 +1697,114 @@ def search_assm(inp):
             pass
         else:
             result.append(assm_log[i])
-    date()
-    print("                                                        Searching")
-    print()
-    if len(result) == 0:
-        print("                                         The search result for \"" + inp + "\" is as follow.")
-        print()
-        print("                                                    No assessment Found.")
-    else:    
-        print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
-        print()
-        for j in range(len(result)):
-            print("                                                    "+ result[j])
-    print()
-    print("                                         <ENTER> Search Again     <ESC> Return")
-    k = readkey()
-    while k != key.ENTER and k != key.ESC:
-        k = readkey()
-    if k == key.ENTER:
-        return searching()
-    elif k == key.ESC:
-        return teachers_system()
+    total_page_num = -(-len(result)//20)
+    page_num = 1
+    while True:
+        os.system("cls")
+        if total_page_num == 1:
+            date()
+            print("                                                        Searching")
+            print()
+            if len(result) == 0:
+                print("                                         The search result for \"" + inp + "\" is as follow.")
+                print()
+                print("                                                    No assessment Found.")
+            else:    
+                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
+                print()
+                for j in range(len(result)):
+                    print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
+            print()
+            for x in range(20-len(result)):
+                print()
+            print("                                         <ENTER> Search Again     <ESC> Return")
+            k = readkey()
+            while k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.ENTER:
+                return searching()
+            elif k == key.ESC:
+                os.system("cls")
+                return choose_class(3)
+        elif page_num > 1 and page_num < total_page_num:
+            date()
+            print("                                                        Searching")
+            print()
+            if len(result) == 0:
+                print("                                         The search result for \"" + inp + "\" is as follow.")
+                print()
+                print("                                                    No assessment Found.")
+            else:    
+                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
+                print()
+                for j in range((page_num-1)*20, page_num*20):
+                    print("                                                 "+ "%3s" % str(j+1) + ". " + result[j])
+            print()
+            print("                  <LEFT> Previous Page     <RIGHT> Next Page     <ENTER> Search Again     <ESC> Return")
+            k = readkey()
+            while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.LEFT:
+                page_num -= 1
+            elif k == key.RIGHT:
+                page_num += 1
+            elif k == key.ENTER:
+                return searching()
+            elif k == key.ESC:
+                os.system("cls")
+                return choose_class(3)
+        elif page_num == total_page_num:
+            date()
+            print("                                                        Searching")
+            print()
+            if len(result) == 0:
+                print("                                         The search result for \"" + inp + "\" is as follow.")
+                print()
+                print("                                                    No assessment Found.")
+            else:    
+                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
+                print()
+                for j in range((page_num-1)*20, len(result)):
+                    print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
+            print()
+            for x in range(20-len(result)+(page_num-1)*20):
+                print()
+            print("                               <LEFT> Previous Page     <ENTER> Search Again     <ESC> Return")
+            k = readkey()
+            while k != key.LEFT and k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.LEFT:
+                page_num -= 1
+            elif k == key.ENTER:
+                return searching()
+            elif k == key.ESC:
+                os.system("cls")
+                return choose_class(3)
+        else:
+            date()
+            print("                                                        Searching")
+            print()
+            if len(result) == 0:
+                print("                                         The search result for \"" + inp + "\" is as follow.")
+                print()
+                print("                                                    No assessment Found.")
+            else:    
+                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
+                print()
+                for j in range(page_num*20):
+                    print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
+            print()
+            print("                               <RIGHT> Next Page     <ENTER> Search Again     <ESC> Return")
+            k = readkey()
+            while k != key.RIGHT and k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.RIGHT:
+                page_num += 1
+            elif k == key.ENTER:
+                return searching()
+            elif k == key.ESC:
+                os.system("cls")
+                return choose_class(3)
 #---------------------------------------------------------------------------------
 def encrypted_pw(pw): # To encrypted password(unencrypted)
     word = []
@@ -1782,6 +1879,7 @@ def update_forgetpw_request(): # update the request of forget password in text f
             f.write(str(request[i]) + "\n")
         else:
             f.write(str(request[i]) + "")
+    f.close()
 #---------------------------------------------------------------------------------
 def update_defaultpw(): # update the default password in text file
     f = open("default_password.txt", "w")
@@ -1790,6 +1888,7 @@ def update_defaultpw(): # update the default password in text file
             f.write(default_pw[i] + "\n")
         else:
             f.write(default_pw[i] + "")
+    f.close()
 #---------------------------------------------------------------------------------
 while True:	# main program
     login_selection = main_menu()
@@ -1804,4 +1903,4 @@ while True:	# main program
     elif login_selection == "3":
         break
 
-#64%
+#68%
