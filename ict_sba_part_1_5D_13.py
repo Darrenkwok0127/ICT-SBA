@@ -34,7 +34,6 @@ def system_name(): # Output the title
 ╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""")
 #-------------------------------------------------------------------------------------------------------
 def main_menu(): # main menu
-    global login_name, password
     os.system("cls")
     date()
     system_name()
@@ -53,7 +52,7 @@ def main_menu(): # main menu
         os.system("cls")
         date()
         system_name()
-        login_name, password = get_data()
+        get_data()
         print()
         print()
         return k
@@ -95,17 +94,17 @@ def swap(a, b, ul): #swap items
     ul[b] = temp
 #---------------------------------------------------------------------------------
 def get_data(): # Getting data from text file and make them(username & encrypted_password) into lists
+    global login_name, password
     f1 = open("username.txt", "r")
     f2 = open("encrypted_pw.txt", "r")
-    l_name = f1.readlines()
-    pw = f2.readlines()
+    login_name = f1.readlines()
+    password = f2.readlines()
     f1.close()
     f2.close()
-    for i in range(len(l_name)):
-        l_name[i] = l_name[i].strip("\n")
-    for j in range(len(pw)):
-        pw[j] = pw[j].strip("\n")
-    return l_name, pw
+    for i in range(len(login_name)):
+        login_name[i] = login_name[i].strip("\n")
+    for j in range(len(password)):
+        password[j] = password[j].strip("\n")
 #---------------------------------------------------------------------------------
 def get_class(): # Getting class list e.g 1A
     global class_list
@@ -122,41 +121,52 @@ def get_class(): # Getting class list e.g 1A
     update_class()
 #---------------------------------------------------------------------------------
 def get_adminpw_data(): # Getting administrator password data from text file
+    global admin_pw
     f = open("encrypted_admin_pw.txt", "r")
-    a_pw = f.readlines()
+    admin_pw = f.readlines()
     f.close()
-    for i in range(len(a_pw)):
-        a_pw[i] = a_pw[i].strip()
-    return a_pw
+    for i in range(len(admin_pw)):
+        admin_pw[i] = admin_pw[i].strip()
 #---------------------------------------------------------------------------------
 def get_request(): # Getting reset password request from text file
+    global request
     f = open("forgetpw_request.txt", "r")
-    rq = f.readlines()
+    request = f.readlines()
     f.close()
-    for i in range(len(rq)):
-        rq[i] = rq[i].strip("\n")
-    return rq
+    for i in range(len(request)):
+        request[i] = request[i].strip("\n")
 #---------------------------------------------------------------------------------
-def get_defaultpw(): # Getting deafault password from default 
+def get_defaultpw(): # Getting deafault password from default
+    global default_pw
     f = open("default_password.txt", "r")
-    df = f.readlines()
+    default_pw = f.readlines()
     f.close()
-    for i in range(len(df)):
-        df[i] = df[i].strip("\n")
-    return df
+    for i in range(len(default_pw)):
+        default_pw[i] = default_pw[i].strip("\n")
 #---------------------------------------------------------------------------------
 def get_assm():
+    global assm
     f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "r")
-    a = f.readlines()
+    assm = f.readlines()
     f.close()
-    for i in range(len(a)):
-        a[i] = a[i].strip("\n")
-    if len(a) > 0:
-        bubble_sort(a)
-        while a[0] < current_date and len(a) > 0:
-            del a[0]
-        update_assm(a)
-    return a
+    for i in range(len(assm)):
+        assm[i] = assm[i].strip("\n")
+    bubble_sort(assm)
+    while len(assm) > 0:
+        if assm[0] < current_date:
+            get_assm_log()
+            assm_log.append(assm[0])
+            del assm[0]
+            update_assm_log()
+    update_assm()
+#---------------------------------------------------------------------------------
+def get_assm_log():
+    global assm_log
+    f = open(path + "\\" + "Junior_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "r")
+    assm_log = f.readlines()
+    f.close()
+    for i in range(len(assm_log)):
+        assm_log[i] = assm_log[i].strip("\n")
 #---------------------------------------------------------------------------------
 def login(): # Login Page
     global username_index, password_index
@@ -210,8 +220,7 @@ def login(): # Login Page
             print()
 #---------------------------------------------------------------------------------
 def forget_pw():
-    global request
-    request = get_request()
+    get_request()
     print()
     print()
     print("                                                  Forget your password? ")
@@ -262,9 +271,8 @@ def forget_pw():
             return forget_pw()
 #---------------------------------------------------------------------------------
 def admin_system(): # admin account
-    global default_pw, request
-    request = get_request()
-    default_pw = get_defaultpw()
+    get_request()
+    get_defaultpw()
     os.system("cls")
     date()
     print("\t\t\t\t\t\t    Welcome Back." , login_name[username_index])
@@ -296,8 +304,7 @@ def admin_system(): # admin account
         return
 #---------------------------------------------------------------------------------
 def teachers_info_function():
-    global login_name, password
-    login_name, password = get_data()
+    get_data()
     date()
     for x in range(9):
         print()
@@ -369,6 +376,11 @@ def add_class(index):
             selected_class = str(selected[0]) + selected[1]
             check, temp = linear_search(class_list[index], selected_class)
             if not check:
+                if class_list[index][0] == "Not yet Assigned":
+                        class_list[index][0] = selected_class
+                else:
+                    class_list[index] = class_list[index] + [selected_class]
+                update_class()
                 date()
                 for i in range(10):
                     print()
@@ -380,14 +392,10 @@ def add_class(index):
                     k = readkey()
                 os.system("cls")
                 if k == key.ENTER:
-                    if class_list[index][0] == "Not yet Assigned":
-                        class_list[index][0] = selected_class
-                    else:
-                        class_list[index] = class_list[index] + [selected_class]
-                    update_class()
-                    return show_assigned_class(index)
-                elif k == key.ESC:
                     selected.pop()
+                    selected.pop()
+                elif k == key.ESC:
+                    return show_assigned_class(index)
             else:
                 date()
                 for i in range(10):
@@ -482,6 +490,8 @@ def del_class(index):
         row_num = 0
         os.system("cls")
         date()
+        print()
+        print("                                           Select the Class You Want to Delete")
         for x in range(5):
             print()
         print("                                                ", end = "")
@@ -500,7 +510,7 @@ def del_class(index):
                 print()
                 print("                                                ", end = "")
         print()
-        for x in range(15-row_num):
+        for x in range(13-row_num):
             print()
         print("                                           <UP>")
         print()
@@ -586,7 +596,7 @@ def create_acc_function(): # To create a new teacher account
     pw_ok = False
     found = False
     date()
-    admin_pw = get_adminpw_data()
+    get_adminpw_data()
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
@@ -652,7 +662,7 @@ def create_acc_function(): # To create a new teacher account
 def delete_acc_function(): # To delete teachers' account
     temp = 0
     date()
-    admin_pw = get_adminpw_data()
+    get_adminpw_data()
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
@@ -763,7 +773,7 @@ def reset_request():
                     k = readkey()
                 if k == key.ENTER:
                     os.system("cls")
-                    deafult_pw = get_defaultpw()
+                    get_defaultpw()
                     password[int(current_req[select_index-1])] = deafult_pw[int(current_req[select_index-1])]
                     del request[select_index-1]
                     update_password()
@@ -984,11 +994,10 @@ def choose_class():
         return teachers_system()
 #---------------------------------------------------------------------------------
 def schedule_function(): # To open schedule system function
-    global assm
     os.system("cls")
     date()
     print("       Class: " + selected_class)
-    assm = get_assm()
+    get_assm()
     display_assm()
     if len(assm) == 0:
         print("                                                  <1>  Schedule Assessments")
@@ -1085,7 +1094,7 @@ def add_assms():
             if k == key.ENTER:
                 global assm
                 assm = assm + [assm_deadline]
-                update_assm(assm)
+                update_assm()
                 return schedule_function()
             elif k == key.ESC:
                 selected.pop()
@@ -1106,7 +1115,7 @@ def del_assms():
         os.system("cls")
         if k == key.ENTER:
             del assm[selected_del_assm-1]
-            update_assm(assm)
+            update_assm()
             return del_assms()
         elif k == key.ESC:
             return del_assms()
@@ -1599,7 +1608,7 @@ def resetpw_function(): # To reset password
                         if pw_ok == True:
                             password[password_index] = new_pw
                             update_password()
-                            login_name, password = get_data()
+                            get_data()
                             for x in range(10):
                                 print()
                             print("RESET PASSWORD SUCCESSFUL".rjust(68))
@@ -1724,13 +1733,22 @@ def update_password(): # update the password in text file
             f.write(password[i] + "")
     f.close()
 #---------------------------------------------------------------------------------
-def update_assm(assm_list):
+def update_assm():
     f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "w")
-    for i in range(len(assm_list)):
-        if i < len(assm_list) - 1:
-            f.write(assm_list[i] + "\n")
+    for i in range(len(assm)):
+        if i < len(assm) - 1:
+            f.write(assm[i] + "\n")
         else:
-            f.write(assm_list[i] + "")
+            f.write(assm[i] + "")
+    f.close()
+#---------------------------------------------------------------------------------
+def update_assm_log():
+    f = open(path + "\\" + "Junior_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "w")
+    for i in range(len(assm_log)):
+        if i < len(assm_log) - 1:
+            f.write(assm_log[i] + "\n")
+        else:
+            f.write(assm_log[i] + "")
     f.close()
 #---------------------------------------------------------------------------------
 def update_class():
