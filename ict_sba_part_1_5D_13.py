@@ -150,12 +150,13 @@ def get_assm(): # Getting all assessments from text file
     f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "r")
     assm = f.readlines()
     f.close()
-    for i in range(len(assm)):
+    for i in range(len(assm)):   
         assm[i] = assm[i].strip("\n")
+        assm[i] = assm[i].split("\t")
     bubble_sort(assm)
-    while len(assm) > 0 and assm[0] < current_date:
+    while len(assm) > 0 and assm[0][0] < current_date:
         get_assm_log()
-        assm_log.append(assm[0])
+        assm_log.append(assm[0][0])
         del assm[0]
         update_assm_log()
     update_assm()
@@ -393,7 +394,6 @@ def add_class(index): # Assign Class to teachers
                 os.system("cls")
                 if k == key.ENTER:
                     selected.pop()
-                    selected.pop()
                 elif k == key.ESC:
                     return show_assigned_class(index)
             else:
@@ -565,7 +565,7 @@ def admin_setting(): # Admin Setting
     os.system("cls")
     date()
     print("\t\t\t\t\t\t   Administrator Setting")
-    for x in range(9):
+    for x in range(8):
         print()
     print("\t\t\t\t         <1>  Reset Password")
     print()
@@ -624,7 +624,6 @@ def create_acc_function(): # To create a new teacher account
                 check, temp = linear_search(login_name, add_username)
                 if add_username == "":
                     return admin_setting()
-                    break
                 elif check:
                     os.system("cls")
                     print("Username Has Been Used. Please Try Again".rjust(77)) 
@@ -633,7 +632,6 @@ def create_acc_function(): # To create a new teacher account
                     add_password = input("\t\t\t         Enter New Teacher Account Password: ")
                     if add_password == "":
                         return admin_setting()
-                        break
                     else:
                         pw_ok = pw_check(add_password)
                         if pw_ok:
@@ -657,7 +655,7 @@ def create_acc_function(): # To create a new teacher account
                             return admin_setting()
                         else:
                             os.system("cls")
-                            print("The New Password Does Not Meet Requirements".rjust(77))                            
+                            print("The New Password Does Not Meet Requirements".rjust(77))
 #---------------------------------------------------------------------------------
 def delete_acc_function(): # To delete teachers' account
     temp = 0
@@ -800,30 +798,43 @@ def reset_request():
                 return admin_system()
 #---------------------------------------------------------------------------------
 def teachers_system(): # Teachers accounts
+    get_defaultpw()
     os.system("cls")
-    date()
-    print("                                                    Welcome Back." , login_name[username_index])
-    for x in range(8):
+    if password[password_index] == default_pw[password_index]:
+        date()
+        for i in range(10):
+            print()
+        print("                                                  First Login Detected")
         print()
-    print("                                        <1>  Schedule Assessments System")
-    print()
-    print("                                        <2>  Settings")
-    print()
-    print("                                        <3>  Searching")
-    print()
-    print("                                       <ESC> Sign Out")
-    k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != key.ESC:
+        print("                                Please Change your password. Press <ANY KEY> To Continue")
+        readkey()
+        os.system("cls")
+        print()
+        change_pw()
+    else:
+        date()
+        print("                                                    Welcome Back." , login_name[username_index])
+        for x in range(8):
+            print()
+        print("                                        <1>  Schedule Assessments System")
+        print()
+        print("                                        <2>  Settings")
+        print()
+        print("                                        <3>  Searching")
+        print()
+        print("                                       <ESC> Sign Out")
         k = readkey()
-    os.system("cls")
-    if k == "1":
-        return choose_class(k)
-    elif k == "2":
-        return teacher_setting()
-    elif k == "3":
-        return choose_class(k)
-    elif k == key.ESC:
-        return
+        while k != "1" and k != "2" and k != "3" and k != key.ESC:
+            k = readkey()
+        os.system("cls")
+        if k == "1":
+            return choose_class(k)
+        elif k == "2":
+            return teacher_setting()
+        elif k == "3":
+            return choose_class(k)
+        elif k == key.ESC:
+            return
 #---------------------------------------------------------------------------------
 def choose_class(key_num): # Select classes adding into teachers' account
     total_page_num = -(-len(class_list[username_index])//8)
@@ -1049,7 +1060,7 @@ def display_assm(): # Display Assessments
         row_num = 0
         k = 0
         while k < len(assm) and k < len(display):
-            display[k] = assm[k]
+            display[k] = assm[k][0]
             k += 1
         print("                                     The Most Recent Assessments Scheduled Shown Below")
         print()
@@ -1068,7 +1079,7 @@ def display_assm(): # Display Assessments
 #---------------------------------------------------------------------------------
 def add_assms(): # Adding assessment
     selected = [] #stack
-    while len(selected) <= 4:
+    while len(selected) <= 5:
         if len(selected) == 0:
             item = choose_subject()
             if item == None:
@@ -1094,6 +1105,12 @@ def add_assms(): # Adding assessment
             else:
                 selected.append(item)
         if len(selected) == 4:
+            inp_time = assm_time()
+            if inp_time == None:
+                selected.pop()
+            else:
+                selected.append(inp_time)
+        if len(selected) == 5:
             for i in range(11):
                 print()
             assm_deadline = str(schedule_year) + "-" + "{:02d}".format(selected[2]) + "-" + "{:02d}".format(selected[3]) + " " + selected[0] + " " + selected[1]
@@ -1108,7 +1125,7 @@ def add_assms(): # Adding assessment
             os.system("cls")
             if k == key.ENTER:
                 global assm
-                assm = assm + [assm_deadline]
+                assm = assm + [[assm_deadline, selected[4]]]
                 update_assm()
                 return schedule_function()
             elif k == key.ESC:
@@ -1120,7 +1137,7 @@ def del_assms(): # Remove assessment and confirm / not
         if selected_del_assm != None:
             for i in range(11):
                 print()
-            print("\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1] + "]")
+            print("\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1][0] + "]")
             print()
             print("\t\t\t\t\t\t\tConfirm ?")
             print()
@@ -1152,9 +1169,9 @@ def choose_del_assm(): # Select the assessment you want to remove
             blank_line = 0
             for i in range(len(assm)):
                 if i+1 != select_index:
-                    print("\t\t\t\t\t\t"+ assm[i])
+                    print("\t\t\t\t\t\t"+ assm[i][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[i] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.RED + assm[i][0] + Style.RESET_ALL)
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1178,9 +1195,9 @@ def choose_del_assm(): # Select the assessment you want to remove
         elif page_num > 1 and page_num < total_page_num:
             for x in range(start_num, page_num*10):
                 if x+1 != select_index:
-                    print("\t\t\t\t\t\t"+ assm[x])
+                    print("\t\t\t\t\t\t"+ assm[x][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[x] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.RED + assm[x][0] + Style.RESET_ALL)
                 print()
             print()
             print("                              <UP>     <DOWN>     <LEFT> Previous Page     <RIGHT> Next Page")
@@ -1211,9 +1228,9 @@ def choose_del_assm(): # Select the assessment you want to remove
             blank_line = 0
             for y in range(start_num, len(assm)):
                 if y+1 != select_index:
-                    print("\t\t\t\t\t\t"+ assm[y])
+                    print("\t\t\t\t\t\t"+ assm[y][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[y] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.RED + assm[y][0] + Style.RESET_ALL)
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1241,9 +1258,9 @@ def choose_del_assm(): # Select the assessment you want to remove
         else:
             for z in range(start_num, page_num*10):
                 if z+1 != select_index:
-                    print("\t\t\t\t\t\t"+ assm[z])
+                    print("\t\t\t\t\t\t"+ assm[z][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[z] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.RED + assm[z][0] + Style.RESET_ALL)
                 print()
             print()
             print("                                        <UP>     <DOWN>     <RIGHT> Next Page")
@@ -1279,7 +1296,7 @@ def show_all_assms(): # Show all the assessments scheduled
         print()
         if total_page_num < 2:
             for i in range(len(assm)):
-                print("\t\t\t\t\t\t"+ assm[i])
+                print("\t\t\t\t\t\t"+ assm[i][0])
                 print()
                 blank_line += 2
             for j in range(23-blank_line):
@@ -1291,7 +1308,7 @@ def show_all_assms(): # Show all the assessments scheduled
             leave = True
         elif page_num > 1 and page_num < total_page_num:
             for x in range(start_num, page_num*10):
-                print("\t\t\t\t\t\t"+ assm[x])
+                print("\t\t\t\t\t\t"+ assm[x][0])
                 print()
             print()
             print()
@@ -1312,7 +1329,7 @@ def show_all_assms(): # Show all the assessments scheduled
         elif page_num == total_page_num:
             blank_line = 0
             for y in range(start_num, len(assm)):
-                print("\t\t\t\t\t\t"+ assm[y])
+                print("\t\t\t\t\t\t"+ assm[y][0])
                 print()
                 blank_line += 2
             for j in range(23-blank_line):
@@ -1329,7 +1346,7 @@ def show_all_assms(): # Show all the assessments scheduled
                 leave = True
         else:
             for z in range(start_num, page_num*10):
-                print("\t\t\t\t\t\t"+ assm[z])
+                print("\t\t\t\t\t\t"+ assm[z][0])
                 print()
             print()
             print()
@@ -1564,6 +1581,30 @@ def choose_deadline(month): # Select the date which students should submit/have 
         elif k == key.ESC:
             leave = True
 #---------------------------------------------------------------------------------
+def assm_time():
+    os.system("cls")
+    date()
+    print()
+    while True:
+        for i in range(10):
+            print()
+        print("                                                       <Empty> To Return ⬇ ")
+        print()
+        inp = input("                   How much time does your assessment spend (0.1 - 5hrs): ")
+        os.system("cls")
+        if inp == "":
+            return None
+        try:
+            inp = float(inp)
+            if inp <= 0 or inp > 5:
+                date()
+                print("                                                 Wrong Input! Enter Again.")
+            else:
+                return str(inp)
+        except ValueError:
+            date()
+            print("                                                 Wrong Input! Enter Again.")
+#---------------------------------------------------------------------------------
 def teacher_setting(): # To open setting function
     os.system("cls")
     date()
@@ -1592,7 +1633,7 @@ def resetpw_function(): # To reset password
         print()
         print("                                                    <Empty input> Exit")
         print()
-        old_pw = input("Enter the Old Password: ".rjust(64))
+        old_pw = input("                                        Enter the Old Password: ")
         if old_pw == "": # Return admin setting / teacher setting when empty input
             if password_index == 0:
                 return admin_setting()
@@ -1604,28 +1645,31 @@ def resetpw_function(): # To reset password
                 os.system("cls")
                 print("The Old Password is incorrect".rjust(70))
             else:
-                new_pw = input("Enter the New Password: ".rjust(64))
-                new_pw = encrypted_pw(new_pw)
+                new_pw = input("                                        Enter the New Password: ")
                 if new_pw == "": # Return admin setting / teacher setting when empty input
                     if password_index == 0:
                         return admin_setting()
                     else:
                         return teacher_setting()
-                elif new_pw == old_pw: # Check if the new password is equal to old password
+                new_pw = encrypted_pw(new_pw)
+                if new_pw == old_pw: # Check if the new password is equal to old password
                     os.system("cls")
-                    print("The Password Should Not Be Same.".rjust(70))
+                    print("                                            The Password Should Not Be Same.")
+                elif new_pw == default_pw[password_index]:
+                    os.system("cls")
+                    print("                                   The Password Should Not Be Same As Default Password.")
                 else:
-                    re_enter_pw = input("Enter the New Password again: ".rjust(70))
-                    re_enter_pw = encrypted_pw(re_enter_pw)
+                    re_enter_pw = input("                                        Enter the New Password again: ")
                     if re_enter_pw == "": # Return admin setting / teacher setting when empty input
                         if password_index == 0:
                             return admin_setting()
                         else:
                             return teacher_setting()
                     else:
+                        re_enter_pw = encrypted_pw(re_enter_pw)
                         os.system("cls")
                         if new_pw != re_enter_pw: # Input data twice and check if they are the same
-                            print("Two New Password are not the same ".rjust(76))
+                            print("                                            Two New Password are not the same ")
                         else:
                             pw_ok = pw_check(new_pw)
                             if pw_ok:
@@ -1641,7 +1685,47 @@ def resetpw_function(): # To reset password
                                 readkey()
                                 return
                             else:
-                                print("The New Password Does Not Meet Requirements".rjust(77))
+                                print("                                       The New Password Does Not Meet Requirements")
+#---------------------------------------------------------------------------------
+def change_pw():
+    while True:
+        date()
+        print("")
+        print("          Password must include at least 8 characters (at least 1 number, 1 capital letter and 1 small letter)")
+        print("                                         Password must not contain any blank space")
+        print()
+        print("                                                    <Empty input> Exit")
+        print()
+        new_pw = input("                                        Enter the New Password: ")
+        if new_pw == "": # Return when empty input
+            return None
+        new_pw = encrypted_pw(new_pw)
+        if new_pw == default_pw[password_index]: # Check if the new password is equal to old password
+            os.system("cls")
+            print("                                            The Password Should Not Be Same.")
+        else:
+            re_enter_pw = input("                                        Enter the New Password again: ")
+            if re_enter_pw == "": # Return when empty input
+                return None
+            else:
+                re_enter_pw = encrypted_pw(re_enter_pw)
+                os.system("cls")
+                if new_pw != re_enter_pw: # Input data twice and check if they are the same
+                    print("                                            Two New Password are not the same ")
+                else:
+                    pw_ok = pw_check(new_pw)
+                    if pw_ok:
+                        password[password_index] = new_pw
+                        update_password()
+                        for x in range(12):
+                            print()
+                        print("RESET PASSWORD SUCCESSFUL".rjust(68))
+                        print()
+                        print("Press <ANY KEY> to continue.".rjust(69))
+                        readkey()
+                        return teachers_system()
+                    else:
+                        print("                                       The New Password Does Not Meet Requirements")
 #---------------------------------------------------------------------------------
 def pw_check(pw): # Check if password meet the requirements of password rules
     word_length, capital, small_letter, num, blank_space = pw_range_check(pw)
@@ -1846,9 +1930,9 @@ def update_assm(): # update assessement in text file
     f = open(path + "\\"+ form + "\\" + selected_class + "_assessments.txt", "w")
     for i in range(len(assm)):
         if i < len(assm) - 1:
-            f.write(assm[i] + "\n")
+            f.write(assm[i][0] + "\t" + assm[i][1] + "\n")
         else:
-            f.write(assm[i] + "")
+            f.write(assm[i][0] + "\t" + assm[i][1] + "")
     f.close()
 #---------------------------------------------------------------------------------
 def update_assm_log(): # update assessment log in text file
@@ -1892,7 +1976,7 @@ def update_defaultpw(): # update the default password in text file
 #---------------------------------------------------------------------------------
 while True:	# main program
     login_selection = main_menu()
-    path = os.getcwd()
+    path = os.getcwd() # Getting the path of this python file
     if login_selection == "1":
         login()
     elif login_selection == "2":
@@ -1900,7 +1984,7 @@ while True:	# main program
         system_name()
         print("")
         forget_pw()
-    elif login_selection == "3":
+    elif login_selection == "3": # Leave Program
         break
 
-#68%
+#71%
