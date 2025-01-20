@@ -164,7 +164,7 @@ def get_assm(): # Getting all assessments from text file
 #---------------------------------------------------------------------------------
 def get_assm_log(): # Getting assessments log from text file
     global assm_log
-    f = open(path + "\\" + "Junior_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "r")
+    f = open(path + "\\" + form +"_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "r")
     assm_log = f.readlines()
     f.close()
     for i in range(len(assm_log)):
@@ -1112,14 +1112,28 @@ def add_assms(): # Adding assessment
             else:
                 selected.append(inp_time)
         if len(selected) == 5:
-            for i in range(11):
+            assm_format1 = str(schedule_year) + "-" + "{:02d}".format(selected[2]) + "-" + "{:02d}".format(selected[3])
+            assm_format2 = selected[0] + " " + selected[1]
+            assm_deadline = assm_format1 + " " + assm_format2
+            time = count_time(assm_format1)
+            if time >= 5:
+                for i in range(9):
+                    print()
+                print("                        ⚠  WARNING!! There are too many Assessments on a particular day ⚠ ⚠")
                 print()
-            assm_deadline = str(schedule_year) + "-" + "{:02d}".format(selected[2]) + "-" + "{:02d}".format(selected[3]) + " " + selected[0] + " " + selected[1]
-            print("\t\t\t\t     The Assessment schedule on ["+ assm_deadline + "]")
-            print()
-            print("\t\t\t\t\t\t\tConfirm ?")
-            print()
-            print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
+                print("                              The Assessment will schedule on ["+ assm_deadline + "]")
+                print()
+                print("                                                        Confirm ?")
+                print()
+                print("                                        <ENTER> Confirm               <ESC> Back")
+            else:
+                for i in range(11):
+                    print()
+                print("                              The Assessment will schedule on ["+ assm_deadline + "]")
+                print()
+                print("                                                        Confirm ?")
+                print()
+                print("                                        <ENTER> Confirm               <ESC> Back")
             k = readkey()
             while k != key.ENTER and k != key.ESC:
                 k = readkey()
@@ -1131,6 +1145,16 @@ def add_assms(): # Adding assessment
                 return schedule_function()
             elif k == key.ESC:
                 selected.pop()
+#---------------------------------------------------------------------------------
+def count_time(d):
+    total_time = 0
+    for i in range(len(assm)):
+        find = assm[i][0].find(d)
+        if find == -1:
+            pass
+        else:
+            total_time += float(assm[i][1])
+    return total_time
 #---------------------------------------------------------------------------------
 def del_assms(): # Remove assessment and confirm / not
     if len(assm) != 0:
@@ -1937,7 +1961,7 @@ def update_assm(): # update assessement in text file
     f.close()
 #---------------------------------------------------------------------------------
 def update_assm_log(): # update assessment log in text file
-    f = open(path + "\\" + "Junior_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "w")
+    f = open(path + "\\" + form + "_hw_log" + "\\" + selected_class + "_assessments_hw_log.txt", "w")
     for i in range(len(assm_log)):
         if i < len(assm_log) - 1:
             f.write(assm_log[i] + "\n")
@@ -1988,4 +2012,4 @@ while True:	# main program
     elif login_selection == "3": # Leave Program
         break
 
-#71%
+#85%
