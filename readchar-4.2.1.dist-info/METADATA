@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: readchar
-Version: 4.2.0
+Version: 4.2.1
 Summary: Library to easily read single chars and key strokes
 Author-email: Miguel Ángel García <miguelangel.garcia@gmail.com>, Jan Wille <mail@janwille.de>
 Maintainer-email: Jan Wille <mail@janwille.de>

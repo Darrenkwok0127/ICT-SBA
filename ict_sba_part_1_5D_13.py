@@ -3,6 +3,7 @@ import os
 from datetime import datetime, date
 from readchar import readkey, key
 from colorama import Fore, Style
+import maskpass
 
 def date(): # Output the date of today
     get_date()
@@ -179,7 +180,7 @@ def login(): # Login Page
             return
         else:
             print()
-            input_password = input("Password: ".rjust(60))
+            input_password = maskpass.askpass("                                                  Password: ")
             input_password = encrypted_pw(input_password) # Encrypting password(unencrypted) so it uses to find if it is correct in the text file
             admin1, username_index = search_admin(login_name, input_username) # Search for admin username
             if admin1: # When admin username found, check if admin password is correct
