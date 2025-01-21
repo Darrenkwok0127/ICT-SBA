@@ -140,7 +140,7 @@ def get_request(): # Getting reset password request from text file
 #---------------------------------------------------------------------------------
 def get_defaultpw(): # Getting default password from text file
     global default_pw
-    f = open("default_password.txt", "r")
+    f = open("default_pw.txt", "r")
     default_pw = f.readlines()
     f.close()
     for i in range(len(default_pw)):
@@ -634,18 +634,15 @@ def create_acc_function(): # To create a new teacher account
                     if add_password == "":
                         return admin_setting()
                     else:
+                        add_password = encrypted_pw(add_password)
                         pw_ok = pw_check(add_password)
                         if pw_ok:
                             found = True
-                            add_password = encrypted_pw(add_password)
                             login_name = login_name + [add_username]
                             password = password + [add_password]
                             default_pw = default_pw + [add_password]
                             class_list = class_list + [["Not yet Assigned"]]
-                            update_username()
-                            update_password()
-                            update_defaultpw()
-                            update_class()
+                            append_item(add_username, add_password, "Not yet Assigned")
                             os.system("cls")
                             for x in range(12):
                                 print()
@@ -1201,7 +1198,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 blank_line += 2
             for j in range(21-blank_line):
                 print()
-            print("                                                   <UP>     <DOWN>")
+            print("                                                  <UP>     <DOWN>")
             print()
             print("                                        <ENTER> Confirm     <ESC> Leave")
             k = readkey()
@@ -1260,7 +1257,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 blank_line += 2
             for j in range(21-blank_line):
                 print()
-            print("                                        <UP>     <DOWN>     <LEFT> Previous Page")
+            print("                                       <UP>     <DOWN>     <LEFT> Previous Page")
             print()
             print("                                        <ENTER> Confirm     <ESC> Leave")
             k = readkey()
@@ -1288,7 +1285,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                     print("\t\t\t\t\t\t"+ Fore.RED + assm[z][0] + Style.RESET_ALL)
                 print()
             print()
-            print("                                        <UP>     <DOWN>     <RIGHT> Next Page")
+            print("                                       <UP>     <DOWN>     <RIGHT> Next Page")
             print()
             print("                                        <ENTER> Confirm     <ESC> Leave")
             k = readkey()
@@ -1753,8 +1750,9 @@ def change_pw():
                         print("                                       The New Password Does Not Meet Requirements")
 #---------------------------------------------------------------------------------
 def pw_check(pw): # Check if password meet the requirements of password rules
+    pw = decrypted_pw(pw)
     word_length, capital, small_letter, num, blank_space = pw_range_check(pw)
-    if word_length == True and capital == True and small_letter == True and num == True and blank_space == True:
+    if word_length and capital and small_letter and num and not blank_space:
         return True
     else:
         return False
@@ -1770,7 +1768,7 @@ def pw_range_check(pw2): # Check if the password consists of 8 characters (at le
             number = True
         if pw2[i] > "`" and pw2[i] < "|":
             sl = True
-        if pw2[i] != " ":
+        if pw2[i] == " ":
             space = True
     return wl, cl, sl, number, space
 #---------------------------------------------------------------------------------
@@ -1969,6 +1967,20 @@ def update_assm_log(): # update assessment log in text file
             f.write(assm_log[i] + "")
     f.close()
 #---------------------------------------------------------------------------------
+def append_item(u, p, na):
+    f1 = open("username.txt", "a")
+    f2 = open("encrypted_pw.txt", "a")
+    f3 = open("default_pw.txt", "a")
+    f4 = open("class_list.txt", "a")
+    f1.write("\n" + u)
+    f2.write("\n" + p)
+    f3.write("\n" + p)
+    f4.write("\n" + na)
+    f1.close()
+    f2.close()
+    f3.close()
+    f4.close()
+#---------------------------------------------------------------------------------
 def update_class(): # update class list of teachers in text file
     f = open("class_list.txt", "w")
     for i in range(len(class_list)):
@@ -1991,7 +2003,7 @@ def update_forgetpw_request(): # update the request of forget password in text f
     f.close()
 #---------------------------------------------------------------------------------
 def update_defaultpw(): # update the default password in text file
-    f = open("default_password.txt", "w")
+    f = open("default_pw.txt", "w")
     for i in range(len(default_pw)):
         if i < len(default_pw) - 1:
             f.write(default_pw[i] + "\n")
