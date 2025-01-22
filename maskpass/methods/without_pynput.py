@@ -73,4 +73,4 @@ def askpass(prompt="Enter Password: ", mask="*"):
     try:
         return password_input.decode()
     except UnicodeDecodeError:
-        return 0
+        return ""

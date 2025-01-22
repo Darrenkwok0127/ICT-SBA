@@ -11,12 +11,12 @@ def date(): # Output the date of today
     print(current_date) # Output date
 def get_date(): # Getting current date from computer
     global current_date, current_month, current_year, next_year, current_day
-    current = datetime.now() # To find the current date
-    current_date = str(current.date())
-    current_day = current.strftime("%d")
-    current_month = current.strftime("%m")
-    current_year = current.strftime("%Y")
-    next_year = int(current_year) + 1
+    current = datetime.now() # Getting date and time
+    current_date = str(current.date()) # To find the current date
+    current_day = current.strftime("%d") # Day
+    current_month = current.strftime("%m") # Month
+    current_year = current.strftime("%Y") # Year
+    next_year = int(current_year) + 1 # Find the number of next year
 #-------------------------------------------------------------------------------------------------------
 def system_name(): # Output the title
     print(
@@ -34,7 +34,7 @@ def system_name(): # Output the title
 ██████╔╝╚█████╔╝██║  ██║███████╗██████╔╝╚██████╔╝███████╗███████╗  ██████╔╝   ██║   ██████╔╝   ██║   ███████╗██║ ╚═╝ ██║
 ╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""")
 #-------------------------------------------------------------------------------------------------------
-def leave_msg():
+def leave_msg(): # Leave message
     os.system("cls")
     date()
     system_name()
@@ -46,6 +46,7 @@ def leave_msg():
     print("                           ██║  ╚██╗ ██║  ██║ ██║  ██║ ██║  ██║ ██╔══██╗   ╚██╔╝   ██╔══╝   ╚═╝")
     print("                           ╚██████╔╝ ╚█████╔╝ ╚█████╔╝ ██████╔╝ ██████╦╝    ██║    ███████╗ ██╗")
     print("                            ╚═════╝   ╚════╝   ╚════╝  ╚═════╝  ╚═════╝     ╚═╝    ╚══════╝ ╚═╝")
+#-------------------------------------------------------------------------------------------------------
 def main_menu(): # main menu
     os.system("cls")
     date()
@@ -79,7 +80,7 @@ def main_menu(): # main menu
 #---------------------------------------------------------------------------------
 def linear_search(arr, target): # To search if the target exists(e.g. teachers account)
     found = False
-    for i in range(len(arr)):
+    for i in range(len(arr)): # linear search
         if arr[i] == target:
             found = True
             break
@@ -166,7 +167,7 @@ def get_assm(): # Getting all assessments from text file
         assm[i] = assm[i].strip("\n")
         assm[i] = assm[i].split("\t")
     bubble_sort(assm)
-    while len(assm) > 0 and assm[0][0] < current_date:
+    while len(assm) > 0 and assm[0][0] < current_date: # remove and append the expired assessments to assessments log
         get_assm_log()
         assm_log.append(assm[0][0])
         del assm[0]
@@ -181,7 +182,7 @@ def get_assm_log(): # Getting assessments log from text file
     for i in range(len(assm_log)):
         assm_log[i] = assm_log[i].strip("\n")
 #---------------------------------------------------------------------------------
-def get_exist_date(m):
+def get_exist_date(m): # Getting the date data from text file
     f = open("exist_date.txt", "r")
     ed = f.readlines()
     f.close()
@@ -204,18 +205,18 @@ def login(): # Login Page
             input_password = maskpass.askpass("                                                  Password: ")
             input_password = encrypted_pw(input_password) # Encrypting password(unencrypted) so it uses to find if it is correct in the text file
             admin1, username_index = search_admin(login_name, input_username) # Search for admin username
-            if admin1: # When admin username found, check if admin password is correct
+            if admin1: # Check if admin account is logging in
                 admin2, password_index = search_admin(password, input_password) # Search for admin password
                 check1 = False
                 check2 = False
-            else:
-                check1, username_index = linear_search(login_name, input_username)
+            else: # Check if teachers account is logging in
+                check1, username_index = linear_search(login_name, input_username) # Search for teacher's username
                 if username_index != None and password[username_index] == input_password:
                     password_index = username_index
                     check2 = True
                 else:
                     check2 = False
-            if admin1 and admin2 and username_index == password_index: #Check if it is the correct username and password (admin)
+            if admin1 and admin2 and username_index == password_index: # Check if it is the correct username and password (admin)
                 os.system("cls")
                 get_class()
                 for x in range(12):
@@ -226,7 +227,7 @@ def login(): # Login Page
                 readkey()
                 return admin_system()
             else:
-                if check1 and check2 and username_index == password_index: #Check if it is the correct username and password (teachers)
+                if check1 and check2 and username_index == password_index: # Check if it is the correct username and password (teachers)
                     os.system("cls")
                     get_class()
                     for x in range(12):
@@ -255,6 +256,7 @@ def forget_pw(): # Forget Password
         isadmin1, username_index = search_admin(login_name, inp_name)
         if isadmin1:
             check = False
+            found = False
         else:
             check, username_index = linear_search(login_name, inp_name)
             found, temp = linear_search(request, str(username_index))
@@ -1243,13 +1245,13 @@ def choose_del_assm(): # Select the assessment you want to remove
         date()
         print("\tPage "+ str(page_num) +"\t\t\t    Select And Confirm the Assessment You want to Delete: ")
         print()
-        if total_page_num < 2:
+        if total_page_num < 2: # Case for only one page in total
             blank_line = 0
             for i in range(len(assm)):
                 if i+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[i][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[i][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[i][0] + Style.RESET_ALL) # Show the selecting item using green colour text
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1270,12 +1272,12 @@ def choose_del_assm(): # Select the assessment you want to remove
                 select_index -= 1
             elif k == key.DOWN and select_index < len(assm):
                 select_index += 1
-        elif page_num > 1 and page_num < total_page_num:
+        elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
             for x in range(start_num, page_num*10):
                 if x+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[x][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[x][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[x][0] + Style.RESET_ALL) # Show the selecting item using green colour text
                 print()
             print()
             print("                              <UP>     <DOWN>     <LEFT> Previous Page     <RIGHT> Next Page")
@@ -1302,13 +1304,13 @@ def choose_del_assm(): # Select the assessment you want to remove
                 return schedule_function()
             elif k == key.ENTER:
                 return select_index
-        elif page_num == total_page_num:
+        elif page_num == total_page_num: # Case for the last page
             blank_line = 0
             for y in range(start_num, len(assm)):
                 if y+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[y][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[y][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[y][0] + Style.RESET_ALL) # Show the selecting item using green colour text
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1333,12 +1335,12 @@ def choose_del_assm(): # Select the assessment you want to remove
                 return schedule_function()
             elif k == key.ENTER:
                 return select_index
-        else:
+        else: # Case for the first page
             for z in range(start_num, page_num*10):
                 if z+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[z][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[z][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[z][0] + Style.RESET_ALL) # Show the selecting item using green colour text
                 print()
             print()
             print("                                       <UP>     <DOWN>     <RIGHT> Next Page")
@@ -1372,7 +1374,7 @@ def show_all_assms(): # Show all the assessments scheduled
         date()
         print("\tPage "+ str(page_num) +"\t\t\t\t       Assessments Shown Below: ")
         print()
-        if total_page_num < 2:
+        if total_page_num < 2: # Case for only have one page in total
             for i in range(len(assm)):
                 print("\t\t\t\t\t\t"+ assm[i][0])
                 print()
@@ -1384,7 +1386,7 @@ def show_all_assms(): # Show all the assessments scheduled
             while k != key.ESC:
                 k = readkey()
             leave = True
-        elif page_num > 1 and page_num < total_page_num:
+        elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
             for x in range(start_num, page_num*10):
                 print("\t\t\t\t\t\t"+ assm[x][0])
                 print()
@@ -1404,7 +1406,7 @@ def show_all_assms(): # Show all the assessments scheduled
                 start_num += 10
             elif k == key.ESC:
                 leave = True
-        elif page_num == total_page_num:
+        elif page_num == total_page_num: # Case for the last page
             blank_line = 0
             for y in range(start_num, len(assm)):
                 print("\t\t\t\t\t\t"+ assm[y][0])
@@ -1422,7 +1424,7 @@ def show_all_assms(): # Show all the assessments scheduled
                 start_num -= 10
             elif k == key.ESC:
                 leave = True
-        else:
+        else: # Case for the first page
             for z in range(start_num, page_num*10):
                 print("\t\t\t\t\t\t"+ assm[z][0])
                 print()
@@ -1454,9 +1456,9 @@ def choose_subject(): # Select the subject of the assessment
             print("\t\t     ", end = "")
             for j in range(len(subject_list[i])):
                 if subject_list[row][col] != subject_list[i][j]:
-                    print(subject_list[i][j], end = "      ")
+                    print(subject_list[i][j], end = "      ") # print rest of the item which are not selected
                 else:
-                    print(Fore.GREEN + str(subject_list[i][j]) + Style.RESET_ALL, end = "      ")
+                    print(Fore.GREEN + str(subject_list[i][j]) + Style.RESET_ALL, end = "      ") # Show the selecting item using green colour text
             print()
             print()
         for i in range(15):
@@ -1506,9 +1508,9 @@ def choose_assm_type(): # Select the assessment type
         print("%35s" % "", end = "")
         for x in range(len(type_list)):
             if x+1 != type_num:
-                print(type_list[x], end = "      ")
+                print(type_list[x], end = "      ") # print rest of the item which are not selected
             else:
-                print(Fore.GREEN + type_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + type_list[x] + Style.RESET_ALL, end = "      ") # Show the selecting item using green colour text
         print()
         for i in range(20):
             print()
@@ -1545,9 +1547,9 @@ def choose_month(): # Select the month you want to add your assessment
         print("\t\t", end = "")
         for x in range(len(month_list)):
             if x+1 != month:
-                print(month_list[x], end = "\t")
+                print(month_list[x], end = "\t") # print rest of the month which are not selected
             else:
-                print(Fore.GREEN + month_list[x] + Style.RESET_ALL, end = "\t")
+                print(Fore.GREEN + month_list[x] + Style.RESET_ALL, end = "\t") # Show the selecting item using green colour text
         for x in range(17):
             print()
         print("                                           <UP>")
@@ -1599,15 +1601,15 @@ def choose_deadline(month): # Select the date which students should submit/have 
     col = 0
     day_num = 1
     leave = False
-    day_abbr = calendar.day_abbr
-    month_name = calendar.month_name
+    day_abbr = calendar.day_abbr # Get the abbreviate days of the week (e.g Monday, Tuesday)
+    month_name = calendar.month_name # Get the month name (e.g January, February)
     if int(current_month) > month:
         schedule_year = next_year
     else:
         schedule_year = int(current_year)
     month_day = calendar.monthcalendar(schedule_year, month)
     for y in range(len(month_day[0])):
-        if month_day[0][y] == 1:
+        if month_day[0][y] == 1: # Find the position of 1st date
             col = y
     while not leave:
         date()
@@ -1624,14 +1626,14 @@ def choose_deadline(month): # Select the date which students should submit/have 
             for j in range(len(month_day[i])):
                 if month_day[i][j] == 0:
                     month_day[i][j] = " " 
-                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]:
+                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]: # When overlap with the red highlighted date number using yellow colour text
                     print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
-                elif date_exist(s[month-1], month_day[i][j]):
+                elif date_exist(s[month-1], month_day[i][j]): # Show the unavailable date using red colour text
                     print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
-                elif month_day[row][col] != month_day[i][j]:
+                elif month_day[row][col] != month_day[i][j]: # print rest of the date numbers
                     print(month_day[i][j], end = "\t ")
                 else:
-                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ") # Show the selecting number using green colour text
             print()
         for i in range(11):
             print()
@@ -1658,7 +1660,7 @@ def choose_deadline(month): # Select the date which students should submit/have 
             col += 1
         elif k == key.ENTER:
             if (month == int(current_month) and day_num <= int(current_day)) or date_exist(s[month-1], month_day[row][col]):
-                pass
+                pass # the date expired or highlight in red ---> no respond
             else:
                 return day_num
         elif k == key.ESC:
@@ -1675,7 +1677,7 @@ def assm_time():
         print()
         inp = input("                   How much time does your assessment spend (0.1 - 5hrs): ")
         os.system("cls")
-        if inp == "":
+        if inp == "": # Return to previous page with empty input
             return None
         try:
             inp = float(inp)
@@ -1684,7 +1686,7 @@ def assm_time():
                 print("                                                 Wrong Input! Enter Again.")
             else:
                 return str(inp)
-        except ValueError:
+        except ValueError: # When input invaild data (string)
             date()
             print("                                                 Wrong Input! Enter Again.")
 #---------------------------------------------------------------------------------
@@ -1695,15 +1697,15 @@ def choose_specific_period(month):
     col = 0
     day_num = 1
     leave = False
-    day_abbr = calendar.day_abbr
-    month_name = calendar.month_name
+    day_abbr = calendar.day_abbr # Get the abbreviate days of the week (e.g Monday, Tuesday)
+    month_name = calendar.month_name # Get the month name (e.g January, February)
     if int(current_month) > month:
         schedule_year = next_year
     else:
         schedule_year = int(current_year)
     month_day = calendar.monthcalendar(schedule_year, month)
     for y in range(len(month_day[0])):
-        if month_day[0][y] == 1:
+        if month_day[0][y] == 1: # Find the position of 1st date
             col = y
     while not leave:
         date()
@@ -1720,14 +1722,14 @@ def choose_specific_period(month):
             for j in range(len(month_day[i])):
                 if month_day[i][j] == 0:
                     month_day[i][j] = " "
-                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]:
+                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]: # When overlap with the red highlighted date number using yellow colour text
                     print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
-                elif date_exist(s[month-1], month_day[i][j]):
+                elif date_exist(s[month-1], month_day[i][j]): # Show the unavailable date using red colour text
                     print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
-                elif month_day[row][col] != month_day[i][j]:
+                elif month_day[row][col] != month_day[i][j]: # print rest of the date numbers
                     print(month_day[i][j], end = "\t ")
                 else:
-                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ") # Show the selecting number using green colour text
             print()
         for i in range(11):
             print()
@@ -1753,10 +1755,10 @@ def choose_specific_period(month):
             day_num += 1
             col += 1
         elif k == key.SPACE:
-            if not date_exist(s[month-1], month_day[row][col]):
+            if not date_exist(s[month-1], month_day[row][col]): # When the number does not highlight in red, append into list
                 s[month-1].append(str(day_num))
             else:
-                for j in range(len(s[month-1])):
+                for j in range(len(s[month-1])): # When the number highligh in red, remove the number from list
                     if s[month-1][j] == str(day_num):
                         del s[month-1][j]
                         break
@@ -1766,10 +1768,10 @@ def choose_specific_period(month):
         elif k == key.ESC:
             leave = True
 #---------------------------------------------------------------------------------
-def date_exist(s, d):
+def date_exist(s, d): # linear search for target d
     exist = False
     i = 0
-    while not exist and i < len(s):
+    while not exist and i < len(s): # Search for target d if it is exist in list s
         if s[i] == str(d):
             exist = True
         i += 1
@@ -1857,7 +1859,7 @@ def resetpw_function(): # To reset password
                             else:
                                 print("                                       The New Password Does Not Meet Requirements")
 #---------------------------------------------------------------------------------
-def change_pw():
+def change_pw(): # Change password for first login
     while True:
         date()
         print("")
@@ -1898,7 +1900,7 @@ def change_pw():
                         print("                                       The New Password Does Not Meet Requirements")
 #---------------------------------------------------------------------------------
 def pw_check(pw): # Check if password meet the requirements of password rules
-    pw = decrypted_pw(pw)
+    pw = decrypted_pw(pw) # Decrypted password
     word_length, capital, small_letter, num, blank_space = pw_range_check(pw)
     if word_length and capital and small_letter and num and not blank_space:
         return True
@@ -1908,15 +1910,15 @@ def pw_check(pw): # Check if password meet the requirements of password rules
 def pw_range_check(pw2): # Check if the password consists of 8 characters (at least 1 number, 1 capital letter and 1 small letter) with no space
     wl = cl = sl = number = space = False
     for i in range(len(pw2)):
-        if len(pw2) >= 8:
+        if len(pw2) >= 8: # Check if the password has more than or equal to 8 characters
             wl = True
-        if pw2[i] < "]" and pw2[i] > "?":
+        if pw2[i] < "]" and pw2[i] > "?": # Check if the password has at least one capital letter
             cl = True
-        if pw2[i] >= "/" and pw2[i] < ":":
+        if pw2[i] >= "/" and pw2[i] < ":": # Check if the password has at least one number
             number = True
-        if pw2[i] > "`" and pw2[i] < "|":
+        if pw2[i] > "`" and pw2[i] < "|": # Check if the password has at least one small letter
             sl = True
-        if pw2[i] == " ":
+        if pw2[i] == " ": # Check if the password has spaces
             space = True
     return wl, cl, sl, number, space
 #---------------------------------------------------------------------------------
@@ -1927,7 +1929,7 @@ def searching(): # Searching
     print("                                                        Searching")
     for i in range(10):
         print()
-    if len(assm_log) != 0:
+    if len(assm_log) != 0: # Case when assessment log has item(s)
         print("                                   Please enter any words to search for assessments")
         print()
         inp_search = input("                                                      : ").upper()
@@ -1936,7 +1938,7 @@ def searching(): # Searching
             return choose_class("3")
         else:
             return search_assm(inp_search)
-    else:
+    else: # Case when assessment log does not have items
         print("                                             There are no assessments record")
         print()
         print("                                                Press <ANY KEY> To Return")
@@ -1948,11 +1950,11 @@ def search_assm(inp): # To search assessments and show the result
     result = []
     for i in range(len(assm_log)):
         find = assm_log[i].find(inp)
-        if find == -1:
+        if find == -1: # When it can't find the input, find = -1
             pass
         else:
-            result.append(assm_log[i])
-    total_page_num = -(-len(result)//20)
+            result.append(assm_log[i]) # When it found, append into result
+    total_page_num = -(-len(result)//20) 
     page_num = 1
     while True:
         os.system("cls")
@@ -1960,7 +1962,7 @@ def search_assm(inp): # To search assessments and show the result
             date()
             print("                                                        Searching")
             print()
-            if len(result) == 0:
+            if len(result) == 0: # Case for no result
                 print("                                         The search result for \"" + inp + "\" is as follow.")
                 print()
                 print("                                                    No assessment Found.")
@@ -1981,7 +1983,7 @@ def search_assm(inp): # To search assessments and show the result
             elif k == key.ESC:
                 os.system("cls")
                 return choose_class(3)
-        elif page_num > 1 and page_num < total_page_num:
+        elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not the last page
             date()
             print("                                                        Searching")
             print()
@@ -2008,7 +2010,7 @@ def search_assm(inp): # To search assessments and show the result
             elif k == key.ESC:
                 os.system("cls")
                 return choose_class(3)
-        elif page_num == total_page_num:
+        elif page_num == total_page_num: # Case for the last page
             date()
             print("                                                        Searching")
             print()
@@ -2035,7 +2037,7 @@ def search_assm(inp): # To search assessments and show the result
             elif k == key.ESC:
                 os.system("cls")
                 return choose_class(3)
-        else:
+        else: # Case for the first page
             date()
             print("                                                        Searching")
             print()
@@ -2120,10 +2122,10 @@ def append_item(u, p, na):
     f2 = open("encrypted_pw.txt", "a")
     f3 = open("default_pw.txt", "a")
     f4 = open("class_list.txt", "a")
-    f1.write("\n" + u)
-    f2.write("\n" + p)
+    f1.write("\n" + u) # write new username
+    f2.write("\n" + p) # write new password
     f3.write("\n" + p)
-    f4.write("\n" + na)
+    f4.write("\n" + na)# write "Not yet Assigned"
     f1.close()
     f2.close()
     f3.close()
@@ -2159,7 +2161,7 @@ def update_defaultpw(): # update the default password in text file
             f.write(default_pw[i] + "")
     f.close()
 #---------------------------------------------------------------------------------
-def update_exist_date(ed):
+def update_exist_date(ed): # update the dates (specific period) in text file
     f = open("exist_date.txt", "w")
     for i in range(len(ed)):
         for j in range(len(ed[i])):
@@ -2184,4 +2186,4 @@ while True:	# main program
         leave_msg()
         break
 
-#92%
+#95%
