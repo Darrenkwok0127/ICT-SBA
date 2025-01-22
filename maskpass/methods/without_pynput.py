@@ -70,4 +70,7 @@ def askpass(prompt="Enter Password: ", mask="*"):
                 count += 1
             password_input += char
     print(flush=True)
-    return password_input.decode()
+    try:
+        return password_input.decode()
+    except UnicodeDecodeError:
+        return 0

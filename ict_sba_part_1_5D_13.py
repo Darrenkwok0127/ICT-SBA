@@ -118,8 +118,7 @@ def get_class(): # Getting class list e.g 1A
     for j in range(len(class_list)):
         class_list[j] = class_list[j].split("\t")
     for x in range(len(class_list)):
-        for y in range(len(class_list[x])):
-            bubble_sort(class_list[x])
+        bubble_sort(class_list[x])
     update_class()
 #---------------------------------------------------------------------------------
 def get_adminpw_data(): # Getting administrator password data from text file
@@ -169,6 +168,16 @@ def get_assm_log(): # Getting assessments log from text file
     f.close()
     for i in range(len(assm_log)):
         assm_log[i] = assm_log[i].strip("\n")
+#---------------------------------------------------------------------------------
+def get_exist_date(m):
+    f = open("exist_date.txt", "r")
+    ed = f.readlines()
+    f.close()
+    for i in range(len(ed)):
+        ed[i] = ed[i].strip("\n")
+    for j in range(len(ed)):
+        ed[j] = ed[j].split("\t")
+    return ed
 #---------------------------------------------------------------------------------
 def login(): # Login Page
     global username_index, password_index
@@ -289,10 +298,12 @@ def admin_system(): # Admin account
     else:
         print("                                        <3>" + Fore.RED + "  Reset Password Request *", Style.RESET_ALL)
     print()
-    print("\t\t\t\t       <ESC> Sign Out")
+    print("                                        <4>  Specific Period Arrangement")
+    print()
+    print("                                       <ESC> Sign Out")
     print()
     k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != key.ESC:
+    while k != "1" and k != "2" and k != "3" and k != "4" and k != key.ESC:
         k = readkey()
     if k == "1":
         os.system("cls")
@@ -302,6 +313,8 @@ def admin_system(): # Admin account
         return admin_setting()
     elif k == "3":
         return reset_request()
+    elif k == "4":
+        return specific_period()
     elif k == key.ESC:
         return
 #---------------------------------------------------------------------------------
@@ -421,7 +434,7 @@ def choose_form(index):
             if x+1 != form_num:
                 print(form_list[x], end = "      ")
             else:
-                print(Fore.RED + form_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + form_list[x] + Style.RESET_ALL, end = "      ")
         print()
         for i in range(22):
             print()
@@ -458,7 +471,7 @@ def choose_form_char(index):
             if x+1 != form_char_num:
                 print(form_char_list[x], end = "      ")
             else:
-                print(Fore.RED + form_char_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + form_char_list[x] + Style.RESET_ALL, end = "      ")
         print()
         for i in range(22):
             print()
@@ -501,12 +514,12 @@ def del_class(index): # Select the class you want to remove
                 if i+1 != class_num:
                     print(class_list[index][i], end = "      ")
                 else:
-                    print(Fore.RED + class_list[index][i] + Style.RESET_ALL, end = "      ")
+                    print(Fore.GREEN + class_list[index][i] + Style.RESET_ALL, end = "      ")
             else:
                 if i+1 != class_num:
                     print(class_list[index][i], end = "\n")
                 else:
-                    print(Fore.RED + class_list[index][i] + Style.RESET_ALL, end = "\n")
+                    print(Fore.GREEN + class_list[index][i] + Style.RESET_ALL, end = "\n")
                 row_num += 2
                 print()
                 print("                                                ", end = "")
@@ -739,7 +752,7 @@ def reset_request():
                 if i+1 != select_index:
                     print("                                                       "+ login_name[int(current_req[i])])
                 else:
-                    print("                                                       "+ Fore.RED + login_name[int(current_req[i])] + Style.RESET_ALL)
+                    print("                                                       "+ Fore.GREEN + login_name[int(current_req[i])] + Style.RESET_ALL)
                 print()
                 row_num += 2
             for j in range(18-row_num):
@@ -794,6 +807,37 @@ def reset_request():
                     None
             elif k == key.ESC:
                 return admin_system()
+#---------------------------------------------------------------------------------
+def specific_period():
+    os.system("cls")
+    temp = []
+    while len(temp) < 2:
+        if len(temp) == 0:
+            item = choose_month()
+            if item == None:
+                return admin_system()
+            else:
+                temp.append(item)
+        if len(temp) == 1:
+            item = choose_specific_period(temp[0])
+            if item == None:
+                temp.pop()
+            else:
+                date()
+                for i in range(10):
+                    print()
+                print("                                            Specific Period Update SUCCESSFUL")
+                print()
+                print("                                                         Continue ?")
+                print()
+                print("                                       <ENTER> Continue               <ESC> Return")
+                k = readkey()
+                while k != key.ENTER and k != key.ESC:
+                    k = readkey()
+                if k == key.ENTER:
+                    return specific_period()
+                elif k == key.ESC:
+                    return admin_system()
 #---------------------------------------------------------------------------------
 def teachers_system(): # Teachers accounts
     get_defaultpw()
@@ -1193,7 +1237,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if i+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[i][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[i][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[i][0] + Style.RESET_ALL)
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1219,7 +1263,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if x+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[x][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[x][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[x][0] + Style.RESET_ALL)
                 print()
             print()
             print("                              <UP>     <DOWN>     <LEFT> Previous Page     <RIGHT> Next Page")
@@ -1252,7 +1296,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if y+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[y][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[y][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[y][0] + Style.RESET_ALL)
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1282,7 +1326,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if z+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[z][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.RED + assm[z][0] + Style.RESET_ALL)
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[z][0] + Style.RESET_ALL)
                 print()
             print()
             print("                                       <UP>     <DOWN>     <RIGHT> Next Page")
@@ -1400,7 +1444,7 @@ def choose_subject(): # Select the subject of the assessment
                 if subject_list[row][col] != subject_list[i][j]:
                     print(subject_list[i][j], end = "      ")
                 else:
-                    print(Fore.RED + str(subject_list[i][j]) + Style.RESET_ALL, end = "      ")
+                    print(Fore.GREEN + str(subject_list[i][j]) + Style.RESET_ALL, end = "      ")
             print()
             print()
         for i in range(15):
@@ -1452,7 +1496,7 @@ def choose_assm_type(): # Select the assessment type
             if x+1 != type_num:
                 print(type_list[x], end = "      ")
             else:
-                print(Fore.RED + type_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + type_list[x] + Style.RESET_ALL, end = "      ")
         print()
         for i in range(20):
             print()
@@ -1484,14 +1528,14 @@ def choose_month(): # Select the month you want to add your assessment
     month_list = ["[1] January","[2] Feburary","[3] March","[4] April","[5] May","\t[6] June\n\n","\t[7] July","[8] August","[9] September","[10] October","[11] November","[12] December"]
     while not leave:
         date()
-        print("\t\t\t\tSelect And Confirm The Month You Want To Schedule The Assessment")
+        print("                                                Select And Confirm The Month")
         print()
         print("\t\t", end = "")
         for x in range(len(month_list)):
             if x+1 != month:
                 print(month_list[x], end = "\t")
             else:
-                print(Fore.RED + month_list[x] + Style.RESET_ALL, end = "\t")
+                print(Fore.GREEN + month_list[x] + Style.RESET_ALL, end = "\t")
         for x in range(17):
             print()
         print("                                           <UP>")
@@ -1538,6 +1582,7 @@ def choose_month(): # Select the month you want to add your assessment
 #---------------------------------------------------------------------------------
 def choose_deadline(month): # Select the date which students should submit/have their assessment
     global schedule_year
+    s = get_exist_date(month)
     row = 0
     col = 0
     day_num = 1
@@ -1567,10 +1612,14 @@ def choose_deadline(month): # Select the date which students should submit/have 
             for j in range(len(month_day[i])):
                 if month_day[i][j] == 0:
                     month_day[i][j] = " " 
-                if month_day[row][col] != month_day[i][j]:
+                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]:
+                    print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                elif date_exist(s[month-1], month_day[i][j]):
+                    print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                elif month_day[row][col] != month_day[i][j]:
                     print(month_day[i][j], end = "\t ")
                 else:
-                    print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
             print()
         for i in range(11):
             print()
@@ -1596,7 +1645,7 @@ def choose_deadline(month): # Select the date which students should submit/have 
             day_num += 1
             col += 1
         elif k == key.ENTER:
-            if month == int(current_month) and day_num <= int(current_day):
+            if (month == int(current_month) and day_num <= int(current_day)) or date_exist(s[month-1], month_day[row][col]):
                 pass
             else:
                 return day_num
@@ -1626,6 +1675,93 @@ def assm_time():
         except ValueError:
             date()
             print("                                                 Wrong Input! Enter Again.")
+#---------------------------------------------------------------------------------
+def choose_specific_period(month):
+    global schedule_year
+    s = get_exist_date(month)
+    row = 0
+    col = 0
+    day_num = 1
+    leave = False
+    day_abbr = calendar.day_abbr
+    month_name = calendar.month_name
+    if int(current_month) > month:
+        schedule_year = next_year
+    else:
+        schedule_year = int(current_year)
+    month_day = calendar.monthcalendar(schedule_year, month)
+    for y in range(len(month_day[0])):
+        if month_day[0][y] == 1:
+            col = y
+    while not leave:
+        date()
+        print("\t\t\t\t     Select and Confirm the Specific Period Arragement")
+        print()
+        print("%60s" % month_name[month], schedule_year)
+        print()
+        print("\t\t\t\t", end = "")
+        for x in range(len(day_abbr)):
+            print(day_abbr[x], end = "\t")
+        print()
+        for i in range(len(month_day)):
+            print("\t\t\t\t ", end = "")
+            for j in range(len(month_day[i])):
+                if month_day[i][j] == 0:
+                    month_day[i][j] = " "
+                if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]:
+                    print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                elif date_exist(s[month-1], month_day[i][j]):
+                    print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                elif month_day[row][col] != month_day[i][j]:
+                    print(month_day[i][j], end = "\t ")
+                else:
+                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+            print()
+        for i in range(11):
+            print()
+        print("                               <UP>")
+        print()
+        print("                        <LEFT>       <RIGHT>      <SPACE> Select      <ENTER> Confirm      <ESC> Back")
+        print()
+        print("                              <DOWN>")
+        k = readkey()
+        while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.SPACE and k != key.ENTER and k != key.ESC:
+            k = readkey()
+        os.system("cls")
+        if k == key.UP and row > 0 and month_day[row-1][col] != " ":
+            day_num -= 7
+            row -= 1
+        elif k == key.DOWN and row < len(month_day)-1 and month_day[row+1][col] != " ":
+            day_num += 7
+            row += 1
+        elif k == key.LEFT and col > 0 and month_day[row][col-1] != " ":
+            day_num -= 1
+            col -= 1
+        elif k == key.RIGHT and col < 6 and month_day[row][col+1] != " ":
+            day_num += 1
+            col += 1
+        elif k == key.SPACE:
+            if not date_exist(s[month-1], month_day[row][col]):
+                s[month-1].append(str(day_num))
+            else:
+                for j in range(len(s[month-1])):
+                    if s[month-1][j] == str(day_num):
+                        del s[month-1][j]
+                        break
+        elif k == key.ENTER:
+            update_exist_date(s)
+            return 0
+        elif k == key.ESC:
+            leave = True
+#---------------------------------------------------------------------------------
+def date_exist(s, d):
+    exist = False
+    i = 0
+    while not exist and i < len(s):
+        if s[i] == str(d):
+            exist = True
+        i += 1
+    return exist
 #---------------------------------------------------------------------------------
 def teacher_setting(): # To open setting function
     os.system("cls")
@@ -1699,11 +1835,11 @@ def resetpw_function(): # To reset password
                                 update_password()
                                 for x in range(10):
                                     print()
-                                print("RESET PASSWORD SUCCESSFUL".rjust(68))
+                                print("                                               RESET PASSWORD SUCCESSFUL")
                                 print()
-                                print("Please Login Again".rjust(65))
+                                print("                                                  Please Login Again")
                                 print()
-                                print("Press <ANY KEY> to continue.".rjust(69))
+                                print("                                             Press <ANY KEY> to continue.")
                                 readkey()
                                 return
                             else:
@@ -2011,6 +2147,17 @@ def update_defaultpw(): # update the default password in text file
             f.write(default_pw[i] + "")
     f.close()
 #---------------------------------------------------------------------------------
+def update_exist_date(ed):
+    f = open("exist_date.txt", "w")
+    for i in range(len(ed)):
+        for j in range(len(ed[i])):
+            if j < len(ed[i]) - 1:
+                f.write(ed[i][j] + "\t")
+            elif i != len(ed) - 1 and j != len(ed[i]):
+                f.write(ed[i][j] + "\n")
+            else:
+                f.write(ed[i][j] + "")
+#---------------------------------------------------------------------------------
 while True:	# main program
     login_selection = main_menu()
     path = os.getcwd() # Getting the path of this python file
@@ -2024,4 +2171,4 @@ while True:	# main program
     elif login_selection == "3": # Leave Program
         break
 
-#85%
+#92%
