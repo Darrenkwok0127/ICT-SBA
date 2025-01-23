@@ -62,7 +62,7 @@ def main_menu(): # main menu
     k = readkey() # reading keyboard input
     while k != "1" and k != "2" and k != key.ESC:
         k = readkey()
-    if k == "1": # When user press "1", it goes into login system
+    if k == "1": # When "1" key is pressed, it goes into login system
         os.system("cls")
         date()
         system_name()
@@ -70,12 +70,12 @@ def main_menu(): # main menu
         print()
         print()
         return k
-    elif k == "2": # When user press "2", it goes into forget password function
+    elif k == "2": # When "2" key is pressed, it goes into forget password function
         os.system("cls")
         get_data()
         get_request()
         return k
-    elif k == key.ESC: # When user press "ESC", it exits the program
+    elif k == key.ESC: # When ESC key is pressed, it exits the program
         return "3"
 #---------------------------------------------------------------------------------
 def linear_search(arr, target): # To search if the target exists(e.g. teachers account)
@@ -195,7 +195,7 @@ def get_exist_date(m): # Getting the date data from text file
 def login(): # Login Page
     global username_index, password_index
     while True:
-        print("                                                     ⬇ [<Empty> To Return]")
+        print("                                                     [<Empty> To Return]")
         print()
         input_username = input("                                                  Username: ")
         if input_username == "":
@@ -250,17 +250,17 @@ def forget_pw(): # Forget Password
     print("                                                  Forget your password? ")
     print()
     inp_name = input("                                        Please Enter your Username: ")
-    if inp_name == "":
+    if inp_name == "": # Return to main menu when empty input
         return
     else:
         isadmin1, username_index = search_admin(login_name, inp_name)
-        if isadmin1:
+        if isadmin1: # If admin username detected
             check = False
             found = False
-        else:
-            check, username_index = linear_search(login_name, inp_name)
-            found, temp = linear_search(request, str(username_index))
-        if check and not found:
+        else: # Teachers username detected
+            check, username_index = linear_search(login_name, inp_name) # Check if teacher username exists
+            found, temp = linear_search(request, str(username_index)) # Check if it didn't send request before
+        if check and not found: # teacher username exists and request send for the first time
             os.system("cls")
             date()
             system_name()
@@ -275,7 +275,7 @@ def forget_pw(): # Forget Password
             print()
             print("                                               Press <ANY KEY> To Continue")
             readkey()
-        elif found:
+        elif found: # requset exists
             os.system("cls")
             date()
             system_name()
@@ -288,7 +288,7 @@ def forget_pw(): # Forget Password
             print()
             print("                                                Press <ANY KEY> To Return")
             readkey()
-        else:
+        else: # No username found
             os.system("cls")
             date()
             system_name()
@@ -307,10 +307,10 @@ def admin_system(): # Admin account
     print()
     print("                                        <2>  Settings (Administrator)")
     print()
-    if len(request) == 0:
+    if len(request) == 0: # No request
         print("                                        <3>  Reset Password Request")
-    else:
-        print("                                        <3>" + Fore.RED + "  Reset Password Request *", Style.RESET_ALL)
+    else: # Request received
+        print("                                        <3>" + Fore.RED + "  Reset Password Request *", Fore.RESET)
     print()
     print("                                        <4>  Specific Period Arrangement")
     print()
@@ -319,17 +319,17 @@ def admin_system(): # Admin account
     k = readkey()
     while k != "1" and k != "2" and k != "3" and k != "4" and k != key.ESC:
         k = readkey()
-    if k == "1":
+    if k == "1": # When "1" is pressed
         os.system("cls")
         print()
         return teachers_info_function()
-    elif k == "2":
+    elif k == "2": # When "2" is pressed
         return admin_setting()
-    elif k == "3":
+    elif k == "3": # When "3" is pressed
         return reset_request()
-    elif k == "4":
+    elif k == "4": # When "4" is pressed
         return specific_period()
-    elif k == key.ESC:
+    elif k == key.ESC: # When ESC is pressed
         return
 #---------------------------------------------------------------------------------
 def teachers_info_function(): # Change teachers' class information
@@ -337,16 +337,16 @@ def teachers_info_function(): # Change teachers' class information
     date()
     for x in range(9):
         print()
-    print("                                    Which Teachers' account info you want to change?")
+    print("                              Which Teachers' account information you want to change?")
     print()
     inp_username = input("                                    <Empty input> Exit : ")
-    if inp_username == "":
+    if inp_username == "": # When empty input detected, return to admin system
         return admin_system()
     else:
         found, teachers_acc_index = linear_search(login_name, inp_username)
-        if found and teachers_acc_index != 0:
+        if found and teachers_acc_index != 0: # teacher username exists and username not equal to admin
             return show_assigned_class(teachers_acc_index)
-        else:
+        else: # No username found
             os.system("cls")
             print("                                          User Not Found / Wrong Input.")
             return teachers_info_function()
@@ -357,7 +357,7 @@ def show_assigned_class(index):
     date()
     for i in range(10):
         print()
-    if class_list[index][0] != "Not yet Assigned":
+    if class_list[index][0] != "Not yet Assigned": # If the element(s) is equal to class
         print("                                           Current Class Assigned:", end = " ")
         for i in range(len(class_list[index])):
             if (i+1) % 4 != 0:
@@ -371,7 +371,7 @@ def show_assigned_class(index):
         k = readkey()
         while k != "1" and k != "2" and k != key.ESC:
             k = readkey()
-    else:
+    else: # If the first element is "Not yet Assigned"
         print("                                              There is no Class Assigned.")
         print()
         print("                                             <1> Add Class       <ESC> Back")
@@ -379,35 +379,35 @@ def show_assigned_class(index):
         while k != "1" and k != key.ESC:
             k = readkey()
     os.system("cls")
-    if k == "1":
+    if k == "1": # When "1" key is pressed
         return add_class(index)
-    elif k == "2":
+    elif k == "2": # When "2" key is pressed
         return del_class(index)
-    elif k == key.ESC:
+    elif k == key.ESC: # When ESC key is pressed
         return teachers_info_function()
 #---------------------------------------------------------------------------------
 def add_class(index): # Assign Class to teachers
-    selected = []
+    selected = [] # stack
     while len(selected) <= 2:
         if len(selected) == 0:
             selected_form = choose_form(index)
-            if selected_form == None:
+            if selected_form == None: # When ESC key is pressed, it returns
                 return show_assigned_class(index)
             else:
                 selected.append(selected_form)
         if len(selected) == 1:
             selected_form_char = choose_form_char(index)
-            if selected_form_char == None:
+            if selected_form_char == None: # When ESC key is pressed, it returns to previous page
                 selected.pop()
             else:
                 selected.append(selected_form_char)
         if len(selected) == 2:
             selected_class = str(selected[0]) + selected[1]
             check, temp = linear_search(class_list[index], selected_class)
-            if not check:
-                if class_list[index][0] == "Not yet Assigned":
+            if not check: # If the target does not exist
+                if class_list[index][0] == "Not yet Assigned": # If the first element is equal to "Not yet Assigned"
                         class_list[index][0] = selected_class
-                else:
+                else: # Elements equal to classes
                     class_list[index] = class_list[index] + [selected_class]
                 update_class()
                 date()
@@ -420,9 +420,9 @@ def add_class(index): # Assign Class to teachers
                 while k != key.ENTER and k != key.ESC:
                     k = readkey()
                 os.system("cls")
-                if k == key.ENTER:
+                if k == key.ENTER: # When ENTER key is pressed
                     selected.pop()
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     return show_assigned_class(index)
             else:
                 date()
@@ -448,7 +448,7 @@ def choose_form(index):
             if x+1 != form_num:
                 print(form_list[x], end = "      ")
             else:
-                print(Fore.GREEN + form_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + form_list[x] + Fore.RESET, end = "      ") # Show the selecting item using green colour text
         print()
         for i in range(22):
             print()
@@ -457,19 +457,19 @@ def choose_form(index):
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and form_num >= 1:
+        if k == key.LEFT: # When LEFT arrow key is pressed
             if form_num-1 < 1:
                 form_num = len(form_list)
             else:
                 form_num -= 1
-        elif k == key.RIGHT and form_num <= len(form_list):
+        elif k == key.RIGHT: # When RIGHT arrow key is pressed
             if form_num+1 > len(form_list):
                 form_num = 1
             else:
                 form_num += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             return form_num
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def choose_form_char(index):
@@ -485,7 +485,7 @@ def choose_form_char(index):
             if x+1 != form_char_num:
                 print(form_char_list[x], end = "      ")
             else:
-                print(Fore.GREEN + form_char_list[x] + Style.RESET_ALL, end = "      ")
+                print(Fore.GREEN + form_char_list[x] + Fore.RESET, end = "      ") # Show the selecting item using green colour text
         print()
         for i in range(22):
             print()
@@ -494,19 +494,19 @@ def choose_form_char(index):
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and form_char_num >= 1:
+        if k == key.LEFT: # When LEFT arrow key is pressed
             if form_char_num-1 < 1:
                 form_char_num = len(form_char_list)
             else:
                 form_char_num -= 1
-        elif k == key.RIGHT and form_char_num <= len(form_char_list):
+        elif k == key.RIGHT: # When RIGHT arrow key is pressed
             if form_char_num+1 > len(form_char_list):
                 form_char_num = 1
             else:
                 form_char_num += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             return form_char_list[form_char_num-1]
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def del_class(index): # Select the class you want to remove
@@ -528,12 +528,12 @@ def del_class(index): # Select the class you want to remove
                 if i+1 != class_num:
                     print(class_list[index][i], end = "      ")
                 else:
-                    print(Fore.GREEN + class_list[index][i] + Style.RESET_ALL, end = "      ")
+                    print(Fore.GREEN + class_list[index][i] + Fore.RESET, end = "      ") # Show the selecting item using green colour text
             else:
                 if i+1 != class_num:
                     print(class_list[index][i], end = "\n")
                 else:
-                    print(Fore.GREEN + class_list[index][i] + Style.RESET_ALL, end = "\n")
+                    print(Fore.GREEN + class_list[index][i] + Fore.RESET, end = "\n") # Show the selecting item using green colour text
                 row_num += 2
                 print()
                 print("                                                ", end = "")
@@ -548,19 +548,19 @@ def del_class(index): # Select the class you want to remove
         k = readkey()
         while k != key.ESC and k != key.ENTER and k != key.LEFT and k != key.RIGHT and k != key.UP and k != key.DOWN:
             k = readkey()
-        if k == key.LEFT and col > 1:
+        if k == key.LEFT and col > 1: # When LEFT arrow key is pressed
             col -= 1
             class_num -= 1
-        elif k == key.RIGHT and col < 4 and class_num < len(class_list[index]):
+        elif k == key.RIGHT and col < 4 and class_num < len(class_list[index]): # When RIGHT arrow key is pressed
             col += 1
             class_num += 1
-        elif k == key.UP and row > 1:
+        elif k == key.UP and row > 1: # When UP arrow key is pressed
             row -= 1
             class_num -= 4
-        elif k == key.DOWN and class_num+4 <= len(class_list[index]):
+        elif k == key.DOWN and class_num+4 <= len(class_list[index]): # When DOWN arrown key is pressed
             row += 1
             class_num += 4
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             os.system("cls")
             date()
             for z in range(10):
@@ -571,21 +571,21 @@ def del_class(index): # Select the class you want to remove
             k = readkey()
             while k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.ENTER:
+            if k == key.ENTER: # When ENTER key is pressed (Confirm)
                 leave = True
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed (Return)
                 return del_class(index)
             if leave:
-                if len(class_list[index]) == 1:
+                if len(class_list[index]) == 1: # If the list has only one element left, change the first element to "Not yet Assigned"
                     class_list[index][0] = "Not yet Assigned"
-                else:
+                else: # the list has more than one element
                     del class_list[index][class_num-1]
                 update_class()
-                if class_list[index][0] == "Not yet Assigned":
+                if class_list[index][0] == "Not yet Assigned": # Check the first element if it is "Not yet Assigned"
                     return show_assigned_class(index)
                 else:
                     return del_class(index)
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
             return show_assigned_class(index)
 #---------------------------------------------------------------------------------
@@ -607,16 +607,16 @@ def admin_setting(): # Admin Setting
     while k != "1" and k != "2" and k != "3" and k != key.ESC:
         k = readkey()
     os.system("cls")
-    if k == "1":
+    if k == "1": # When "1" is pressed
         print()
         return resetpw_function()
-    elif k == "2":
+    elif k == "2": # When "2" is pressed
         print()
         return create_acc_function()
-    elif k == "3":
+    elif k == "3": # When "3" is pressed
         print()
         return delete_acc_function()
-    elif k == key.ESC:
+    elif k == key.ESC: # When ESC key is pressed
         return admin_system()
 #---------------------------------------------------------------------------------
 def create_acc_function(): # To create a new teacher account
@@ -629,11 +629,11 @@ def create_acc_function(): # To create a new teacher account
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
     print()
-    if input_admin_pw == "":
+    if input_admin_pw == "": # Return to previous page when empty input detected
         return admin_setting()
     else:
         input_admin_pw = encrypted_pw(input_admin_pw)
-        if input_admin_pw != admin_pw[0]:
+        if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
             os.system("cls")
             print("Administrator Password Incorrect.".rjust(75))
             return create_acc_function()
@@ -650,15 +650,15 @@ def create_acc_function(): # To create a new teacher account
                     print()
                 add_username = input("\t\t\t         Enter New Teacher Account Username: ")
                 check, temp = linear_search(login_name, add_username)
-                if add_username == "":
+                if add_username == "": # Return to previous page when empty input detected
                     return admin_setting()
-                elif check:
+                elif check: # Same username found
                     os.system("cls")
                     print("Username Has Been Used. Please Try Again".rjust(77)) 
                 else:
                     print()
                     add_password = input("\t\t\t         Enter New Teacher Account Password: ")
-                    if add_password == "":
+                    if add_password == "": # Return to previous page when empty input detected
                         return admin_setting()
                     else:
                         add_password = encrypted_pw(add_password)
@@ -690,7 +690,7 @@ def delete_acc_function(): # To delete teachers' account
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
     print()
-    if input_admin_pw == "":
+    if input_admin_pw == "": # Return to previous page when empty input detected
         return admin_setting()
     else:
         input_admin_pw = encrypted_pw(input_admin_pw)
@@ -701,16 +701,16 @@ def delete_acc_function(): # To delete teachers' account
         else:
             found = False
             while not(found):
-                if temp > 0:
+                if temp == 1:
                     print("<Empty input> Exit".rjust(65))
                     print()
                 input_accname = input("\t\t\t   Enter the Account Username you want to delete: ")
-                if input_accname == "":
+                if input_accname == "": # Return to previous page when empty input detected
                     return admin_setting()
                     break
                 else:
                     check, index_user = linear_search(login_name, input_accname)
-                    if check and index_user != 0:
+                    if check and index_user != 0: # Username found and username is not admin 
                         found = True
                         del login_name[index_user]
                         del password[index_user]
@@ -728,7 +728,7 @@ def delete_acc_function(): # To delete teachers' account
                         print("\t\t\t\t\t       Press <ANY KEY> To Exit")
                         readkey()
                         return admin_setting()
-                    else:
+                    else: # Username not found
                         temp = 1
                         os.system("cls")
                         print("                                    Username not found / Invalid. Please try it again")
@@ -740,7 +740,7 @@ def reset_request():
     while not leave:
         os.system("cls")
         date()
-        if len(request) == 0:
+        if len(request) == 0: # No request
             leave = True
             for i in range(11):
                 print()
@@ -749,14 +749,14 @@ def reset_request():
             print("                                               Press <ANY KEY> To Return")
             readkey()
             return admin_system()
-        else:
+        else: # 
             row_num = 0
-            if len(request) < 5:
+            if len(request) < 5: # When the number of request less than 5
                 current_req = [''] * len(request)
                 for i in range(len(request)):
                     current_req[i] = request[i]
-            else:
-                current_req = [''] * 5
+            else: # When the number of request more than or equal to 5
+                current_req = [''] * 5 # Limit the number of element be five
                 for i in range(5):
                     current_req[i] = request[i]
             print("                                                  Reset Request From:")
@@ -766,7 +766,7 @@ def reset_request():
                 if i+1 != select_index:
                     print("                                                       "+ login_name[int(current_req[i])])
                 else:
-                    print("                                                       "+ Fore.GREEN + login_name[int(current_req[i])] + Style.RESET_ALL)
+                    print("                                                       "+ Fore.GREEN + login_name[int(current_req[i])] + Fore.RESET) # Show the selecting item using green colour text
                 print()
                 row_num += 2
             for j in range(18-row_num):
@@ -1174,7 +1174,7 @@ def add_assms(): # Adding assessment
             if time >= 5:
                 for i in range(9):
                     print()
-                print("                        ⚠  WARNING!! There are too many Assessments on a particular day ⚠ ⚠")
+                print("                            WARNING!! There are too many Assessments on a particular day !!!")
                 print()
                 print("                              The Assessment will schedule on ["+ assm_deadline + "]")
                 print()
@@ -1251,7 +1251,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if i+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[i][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[i][0] + Style.RESET_ALL) # Show the selecting item using green colour text
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[i][0] + Fore.RESET) # Show the selecting item using green colour text
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1277,7 +1277,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if x+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[x][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[x][0] + Style.RESET_ALL) # Show the selecting item using green colour text
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[x][0] + Fore.RESET) # Show the selecting item using green colour text
                 print()
             print()
             print("                              <UP>     <DOWN>     <LEFT> Previous Page     <RIGHT> Next Page")
@@ -1310,7 +1310,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if y+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[y][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[y][0] + Style.RESET_ALL) # Show the selecting item using green colour text
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[y][0] + Fore.RESET) # Show the selecting item using green colour text
                 print()
                 blank_line += 2
             for j in range(21-blank_line):
@@ -1340,7 +1340,7 @@ def choose_del_assm(): # Select the assessment you want to remove
                 if z+1 != select_index:
                     print("\t\t\t\t\t\t"+ assm[z][0])
                 else:
-                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[z][0] + Style.RESET_ALL) # Show the selecting item using green colour text
+                    print("\t\t\t\t\t\t"+ Fore.GREEN + assm[z][0] + Fore.RESET) # Show the selecting item using green colour text
                 print()
             print()
             print("                                       <UP>     <DOWN>     <RIGHT> Next Page")
@@ -1458,7 +1458,7 @@ def choose_subject(): # Select the subject of the assessment
                 if subject_list[row][col] != subject_list[i][j]:
                     print(subject_list[i][j], end = "      ") # print rest of the item which are not selected
                 else:
-                    print(Fore.GREEN + str(subject_list[i][j]) + Style.RESET_ALL, end = "      ") # Show the selecting item using green colour text
+                    print(Fore.GREEN + str(subject_list[i][j]) + Fore.RESET, end = "      ") # Show the selecting item using green colour text
             print()
             print()
         for i in range(15):
@@ -1510,7 +1510,7 @@ def choose_assm_type(): # Select the assessment type
             if x+1 != type_num:
                 print(type_list[x], end = "      ") # print rest of the item which are not selected
             else:
-                print(Fore.GREEN + type_list[x] + Style.RESET_ALL, end = "      ") # Show the selecting item using green colour text
+                print(Fore.GREEN + type_list[x] + Fore.RESET, end = "      ") # Show the selecting item using green colour text
         print()
         for i in range(20):
             print()
@@ -1549,7 +1549,7 @@ def choose_month(): # Select the month you want to add your assessment
             if x+1 != month:
                 print(month_list[x], end = "\t") # print rest of the month which are not selected
             else:
-                print(Fore.GREEN + month_list[x] + Style.RESET_ALL, end = "\t") # Show the selecting item using green colour text
+                print(Fore.GREEN + month_list[x] + Fore.RESET, end = "\t") # Show the selecting item using green colour text
         for x in range(17):
             print()
         print("                                           <UP>")
@@ -1627,13 +1627,13 @@ def choose_deadline(month): # Select the date which students should submit/have 
                 if month_day[i][j] == 0:
                     month_day[i][j] = " " 
                 if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]: # When overlap with the red highlighted date number using yellow colour text
-                    print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.YELLOW + str(month_day[i][j]) + Fore.RESET, end = "\t ")
                 elif date_exist(s[month-1], month_day[i][j]): # Show the unavailable date using red colour text
-                    print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.RED + str(month_day[i][j]) + Fore.RESET, end = "\t ")
                 elif month_day[row][col] != month_day[i][j]: # print rest of the date numbers
                     print(month_day[i][j], end = "\t ")
                 else:
-                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ") # Show the selecting number using green colour text
+                    print(Fore.GREEN + str(month_day[i][j]) + Fore.RESET, end = "\t ") # Show the selecting number using green colour text
             print()
         for i in range(11):
             print()
@@ -1673,7 +1673,7 @@ def assm_time():
     while True:
         for i in range(10):
             print()
-        print("                                                       <Empty> To Return ⬇ ")
+        print("                                                       <Empty> To Return")
         print()
         inp = input("                   How much time does your assessment spend (0.1 - 5hrs): ")
         os.system("cls")
@@ -1723,13 +1723,13 @@ def choose_specific_period(month):
                 if month_day[i][j] == 0:
                     month_day[i][j] = " "
                 if date_exist(s[month-1], month_day[i][j]) and month_day[row][col] == month_day[i][j]: # When overlap with the red highlighted date number using yellow colour text
-                    print(Fore.YELLOW + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.YELLOW + str(month_day[i][j]) + Fore.RESET, end = "\t ")
                 elif date_exist(s[month-1], month_day[i][j]): # Show the unavailable date using red colour text
-                    print(Fore.RED + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ")
+                    print(Fore.RED + str(month_day[i][j]) + Fore.RESET, end = "\t ")
                 elif month_day[row][col] != month_day[i][j]: # print rest of the date numbers
                     print(month_day[i][j], end = "\t ")
                 else:
-                    print(Fore.GREEN + str(month_day[i][j]) + Style.RESET_ALL, end = "\t ") # Show the selecting number using green colour text
+                    print(Fore.GREEN + str(month_day[i][j]) + Fore.RESET, end = "\t ") # Show the selecting number using green colour text
             print()
         for i in range(11):
             print()
@@ -2186,4 +2186,4 @@ while True:	# main program
         leave_msg()
         break
 
-#95%
+#98%
