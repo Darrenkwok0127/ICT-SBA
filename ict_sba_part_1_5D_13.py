@@ -135,12 +135,12 @@ def get_class(): # Getting class list e.g 1A
     update_class()
 #---------------------------------------------------------------------------------
 def get_adminpw_data(): # Getting administrator password data from text file
-    global admin_pw
     f = open("encrypted_admin_pw.txt", "r")
-    admin_pw = f.readlines()
+    ap = f.readlines()
     f.close()
-    for i in range(len(admin_pw)):
-        admin_pw[i] = admin_pw[i].strip()
+    for i in range(len(ap)):
+        ap[i] = ap[i].strip()
+    return ap
 #---------------------------------------------------------------------------------
 def get_request(): # Getting reset password request from text file
     global request
@@ -624,7 +624,7 @@ def create_acc_function(): # To create a new teacher account
     pw_ok = False
     found = False
     date()
-    get_adminpw_data()
+    admin_pw = get_adminpw_data()
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
@@ -678,14 +678,14 @@ def create_acc_function(): # To create a new teacher account
                             print("\t\t\t\t\t       Press <ANY KEY> To Exit")
                             readkey()
                             return admin_setting()
-                        else:
+                        else: # The new password does not fulfill the requiremenets
                             os.system("cls")
                             print("The New Password Does Not Meet Requirements".rjust(77))
 #---------------------------------------------------------------------------------
 def delete_acc_function(): # To delete teachers' account
     temp = 0
     date()
-    get_adminpw_data()
+    admin_pw = get_adminpw_data()
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
@@ -694,7 +694,7 @@ def delete_acc_function(): # To delete teachers' account
         return admin_setting()
     else:
         input_admin_pw = encrypted_pw(input_admin_pw)
-        if input_admin_pw != admin_pw[0]:
+        if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
             os.system("cls")
             print("Administrator Password Incorrect.".rjust(75))
             return delete_acc_function()
@@ -708,7 +708,7 @@ def delete_acc_function(): # To delete teachers' account
                 if input_accname == "": # Return to previous page when empty input detected
                     return admin_setting()
                     break
-                else:
+                else: # Input detected
                     check, index_user = linear_search(login_name, input_accname)
                     if check and index_user != 0: # Username found and username is not admin 
                         found = True
@@ -734,7 +734,7 @@ def delete_acc_function(): # To delete teachers' account
                         print("                                    Username not found / Invalid. Please try it again")
                         date()
 #---------------------------------------------------------------------------------
-def reset_request():
+def reset_request(): # To approve the request from the teachers
     leave = False
     select_index = 1
     while not leave:
@@ -749,7 +749,7 @@ def reset_request():
             print("                                               Press <ANY KEY> To Return")
             readkey()
             return admin_system()
-        else: # 
+        else: # Request exists
             row_num = 0
             if len(request) < 5: # When the number of request less than 5
                 current_req = [''] * len(request)
@@ -775,15 +775,15 @@ def reset_request():
             k = readkey()
             while k != key.UP and k != key.DOWN and k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.UP and select_index >= 1:
+            if k == key.UP and select_index >= 1: # When UP arrow key is pressed
                 select_index -= 1
                 if select_index == 0:
                     select_index = len(current_req)
-            elif k == key.DOWN and select_index <= len(current_req):
+            elif k == key.DOWN and select_index <= len(current_req): # When DOWN arrow key is pressed
                 select_index += 1
                 if select_index > len(current_req):
                     select_index = 1
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 os.system("cls")
                 date()
                 for i in range(12):
@@ -794,7 +794,7 @@ def reset_request():
                 k = readkey()
                 while k != key.ENTER and k != key.BACKSPACE and k != key.ESC:
                     k = readkey()
-                if k == key.ENTER:
+                if k == key.ENTER: # When ENTER key is pressed
                     os.system("cls")
                     get_defaultpw()
                     password[int(current_req[select_index-1])] = default_pw[int(current_req[select_index-1])]
@@ -809,7 +809,7 @@ def reset_request():
                     print("                                               Press <ANY KEY> To Return")
                     readkey()
                     select_index = 1
-                elif k == key.BACKSPACE:
+                elif k == key.BACKSPACE: # When BACKSPACE key is pressed
                     os.system("cls")
                     del request[select_index-1]
                     update_forgetpw_request()
@@ -817,14 +817,14 @@ def reset_request():
                     print("                                                   Request Declined")
                     print()
                     print("                                               Press <ANY KEY> To Return")
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     None
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed, return to admin system
                 return admin_system()
 #---------------------------------------------------------------------------------
-def specific_period():
+def specific_period(): # Updating the specific period by admin
     os.system("cls")
-    temp = []
+    temp = [] # stack
     while len(temp) < 2:
         if len(temp) == 0:
             item = choose_month()
@@ -848,9 +848,9 @@ def specific_period():
                 k = readkey()
                 while k != key.ENTER and k != key.ESC:
                     k = readkey()
-                if k == key.ENTER:
+                if k == key.ENTER: # When ENTER key is pressed
                     return specific_period()
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     return admin_system()
 #---------------------------------------------------------------------------------
 def teachers_system(): # Teachers accounts
@@ -883,25 +883,25 @@ def teachers_system(): # Teachers accounts
         while k != "1" and k != "2" and k != "3" and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == "1":
+        if k == "1": # When "1" is pressed
             return choose_class(k)
-        elif k == "2":
+        elif k == "2": # When "2" is pressed
             return teacher_setting()
-        elif k == "3":
+        elif k == "3": # When "3" is pressed
             return choose_class(k)
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             return
 #---------------------------------------------------------------------------------
 def choose_class(key_num): # Select classes adding into teachers' account
     total_page_num = -(-len(class_list[username_index])//8)
     page_num = 1
     start_num = 0
-    if class_list[username_index][0] != "Not yet Assigned":
+    if class_list[username_index][0] != "Not yet Assigned": # When the elements in the list are classes
         global selected_class, form
         class_group = [0] * len(class_list[username_index])
         while True:
             date()
-            if total_page_num == 1:
+            if total_page_num == 1: # Case for only one page in total
                 print("                                                Please Select the Class")
                 for y in range(10-len(class_group)):
                     print()
@@ -924,17 +924,17 @@ def choose_class(key_num): # Select classes adding into teachers' account
                         break # it will break when key is ESC
                 if k == key.ESC:
                     return teachers_system()
-                else:
+                else: # When the range of 1 - maxiumum number of class that can be selected is pressed (e.g 1 - 4)
                     selected_class = class_group[k-1]
-                    if int(selected_class[:1]) <= 3:
+                    if int(selected_class[:1]) <= 3: # Find the first charactor of string (selected_class) smaller than 4 (e.g 2D --> 2)
                         form = "Junior"
-                    else:
+                    else: # The first charactor of string (selected_class) larger than or equal to 4
                         form = "Senior"
                     if key_num == "1":
                         return schedule_function()
                     else:
                         return searching()
-            elif page_num > 1 and page_num < total_page_num:
+            elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
                 num = 0
                 print("                                                Please Select the Class")
                 for y in range(2):
@@ -953,35 +953,35 @@ def choose_class(key_num): # Select classes adding into teachers' account
                             pass
                         else:
                             break # it will break when k is between a range(e.g. 1-3)
-                    elif k == key.ESC:
+                    elif k == key.ESC: # When ESC key is detected
                         break
-                    elif k == key.LEFT:
+                    elif k == key.LEFT: # When LEFT arrow key is detected
                         break
-                    elif k == key.RIGHT:
+                    elif k == key.RIGHT: # When RIGHT arrow key is detected
                         break
-                    else:
+                    else: # When other key is detected (e.g charactors)
                         pass
-                if k == key.LEFT:
+                if k == key.LEFT: # When LEFT key is pressed
                     page_num -= 1
                     start_num -= 8
                     os.system("cls")
-                elif k == key.RIGHT:
+                elif k == key.RIGHT: # When RIGHT key is pressed
                     page_num += 1
                     start_num += 8
                     os.system("cls")
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     return teachers_system()
-                else:
+                else:  # When the range of 1 - maxiumum number of class that can be selected is pressed (e.g 1 - 4)
                     selected_class = class_group[(page_num-1)*8+k-1]
-                    if int(selected_class[:1]) <= 3:
+                    if int(selected_class[:1]) <= 3: # Find the first charactor of string (selected_class) smaller than 4 (e.g 2D --> 2)
                         form = "Junior"
-                    else:
+                    else: # The first charactor of string (selected_class) larger than or equal to 4
                         form = "Senior"
                     if key_num == "1":
                         return schedule_function()
                     else:
                         return searching()
-            elif page_num == total_page_num:
+            elif page_num == total_page_num: # Case for the first page
                 num = 0
                 row_num = 0
                 print("                                                Please Select the Class")
@@ -1004,29 +1004,29 @@ def choose_class(key_num): # Select classes adding into teachers' account
                             pass
                         else:
                             break # it will break when k is between a range(e.g. 1-3)
-                    elif k == key.ESC:
+                    elif k == key.ESC: # When ESC key is detected
                         break
-                    elif k == key.LEFT:
+                    elif k == key.LEFT: # When LEFT key is detected
                         break
                     else:
                         pass
-                if k == key.LEFT:
+                if k == key.LEFT: # When LEFT arrow key is pressed
                     page_num -= 1
                     start_num -= 8
                     os.system("cls")
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     return teachers_system()
-                else:
+                else: # When the range of 1 - maxiumum number of class that can be selected is pressed (e.g 1 - 4)
                     selected_class = class_group[(page_num-1)*8+k-1]
-                    if int(selected_class[:1]) <= 3:
+                    if int(selected_class[:1]) <= 3: # Find the first charactor of string (selected_class) smaller than 4 (e.g 2D --> 2)
                         form = "Junior"
-                    else:
+                    else: # The first charactor of string (selected_class) larger than or equal to 4
                         form = "Senior"
                     if key_num == "1":
                         return schedule_function()
                     else:
                         return searching()
-            else:
+            else: # Case for the last page
                 print("                                                Please Select the Class")
                 for y in range(2):
                     print()
@@ -1042,30 +1042,30 @@ def choose_class(key_num): # Select classes adding into teachers' account
                         if k < 1 or k > 8:
                             pass
                         else:
-                            break # it will break when k is between a range(e.g. 1-3)
-                    elif k == key.ESC:
+                            break # it will break when k is between a range (e.g. 1-3)
+                    elif k == key.ESC: # When ESC key is pressed
                         break
-                    elif k == key.RIGHT:
+                    elif k == key.RIGHT: # When RIGHT arrow key is pressed
                         break
                     else:
                         pass
-                if k == key.RIGHT:
+                if k == key.RIGHT: # When RIGHT arrow key is pressed
                     page_num += 1
                     start_num += 8
                     os.system("cls")
-                elif k == key.ESC:
+                elif k == key.ESC: # When ESC key is pressed
                     return teachers_system()
-                else:
+                else: # When the range of 1 - 8 is pressed
                     selected_class = class_group[k-1]
-                    if int(selected_class[:1]) <= 3:
+                    if int(selected_class[:1]) <= 3: # Find the first charactor of string (selected_class) smaller than 4 (e.g 2D --> 2)
                         form = "Junior"
-                    else:
+                    else: # The first charactor of string (selected_class) larger than or equal to 4
                         form = "Senior"
                     if key_num == "1":
                         return schedule_function()
                     else:
                         return searching()
-    else:
+    else: # When the first element of the list is "Not yet Assigned"
         date()
         for i in range(10):
             print()
@@ -1096,13 +1096,13 @@ def schedule_function(): # To open schedule system function
         while k != "1" and k != "2" and k != "3" and k != key.ESC:
             k = readkey()
     os.system("cls")
-    if k == "1":
+    if k == "1": # When "1" is pressed
         return add_assms()
-    elif k == "2":
+    elif k == "2": # When "2" is pressed
         return del_assms()
-    elif k == "3":
+    elif k == "3": # When "3" is pressed
         return show_all_assms()
-    elif k == key.ESC:
+    elif k == key.ESC: # When ESC key is pressed
         return choose_class("1")
 #---------------------------------------------------------------------------------
 def display_assm(): # Display Assessments
@@ -1193,22 +1193,22 @@ def add_assms(): # Adding assessment
             while k != key.ENTER and k != key.ESC:
                 k = readkey()
             os.system("cls")
-            if k == key.ENTER:
+            if k == key.ENTER: # When ENTER key is pressed
                 global assm
                 assm = assm + [[assm_deadline, selected[4]]]
                 update_assm()
                 return schedule_function()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 selected.pop()
 #---------------------------------------------------------------------------------
 def count_time(d):
     total_time = 0
     for i in range(len(assm)):
         find = assm[i][0].find(d)
-        if find == -1:
+        if find == -1: # When 
             pass
         else:
-            total_time += float(assm[i][1])
+            total_time += float(assm[i][1]) # Find the total amount of time of assessments spending on a day
     return total_time
 #---------------------------------------------------------------------------------
 def del_assms(): # Remove assessment and confirm / not
@@ -1226,13 +1226,13 @@ def del_assms(): # Remove assessment and confirm / not
             while k != key.ENTER and k != key.ESC:
                  k = readkey()
             os.system("cls")
-            if k == key.ENTER:
+            if k == key.ENTER: # When ENTER key is pressed
                 del assm[selected_del_assm-1]
                 update_assm()
                 return del_assms()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 return del_assms()
-    else:
+    else: # No assessment detected
         return schedule_function()
 #---------------------------------------------------------------------------------
 def choose_del_assm(): # Select the assessment you want to remove
@@ -1263,14 +1263,14 @@ def choose_del_assm(): # Select the assessment you want to remove
             while k != key.ESC and k != key.ENTER and k != key.UP and k != key.DOWN:
                 k = readkey()
             os.system("cls")
-            if k == key.ESC:
+            if k == key.ESC: # When ESC key is pressed
                 leave = True
                 return schedule_function()
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return select_index
-            elif k == key.UP and select_index > 1:
+            elif k == key.UP and select_index > 1: # When UP arrow key is pressed
                 select_index -= 1
-            elif k == key.DOWN and select_index < len(assm):
+            elif k == key.DOWN and select_index < len(assm): # When DOWN arrow key is pressed
                 select_index += 1
         elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
             for x in range(start_num, page_num*10):
@@ -1287,22 +1287,22 @@ def choose_del_assm(): # Select the assessment you want to remove
             while k != key.LEFT and k != key.RIGHT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
                 k = readkey()
             os.system("cls")
-            if k == key.LEFT:
+            if k == key.LEFT: # When LEFT arrow key is pressed
                 page_num -= 1
                 start_num -= 10
                 select_index = start_num + 1
-            elif k == key.RIGHT:
+            elif k == key.RIGHT: # When RIGHT arrow key is pressed
                 page_num += 1
                 start_num += 10
                 select_index = start_num + 1
-            elif k == key.UP and select_index > start_num + 1:
+            elif k == key.UP and select_index > start_num + 1: # When UP arrow key is pressed
                 select_index -= 1
-            elif k == key.DOWN and select_index < page_num*10:
+            elif k == key.DOWN and select_index < page_num*10: # When DOWN arrow key is pressed
                 select_index += 1
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 leave = True
                 return schedule_function()
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return select_index
         elif page_num == total_page_num: # Case for the last page
             blank_line = 0
@@ -1322,18 +1322,18 @@ def choose_del_assm(): # Select the assessment you want to remove
             while k != key.LEFT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
                 k = readkey()
             os.system("cls")
-            if k == key.LEFT:
+            if k == key.LEFT: # When LEFT arrow key is pressed
                 page_num -= 1
                 start_num -= 10
                 select_index = start_num + 1
-            elif k == key.UP and select_index > start_num + 1:
+            elif k == key.UP and select_index > start_num + 1: # When UP arrow key is pressed
                 select_index -= 1
-            elif k == key.DOWN and select_index < len(assm):
+            elif k == key.DOWN and select_index < len(assm): # When DOWN arrow key is pressed
                 select_index += 1
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 leave = True
                 return schedule_function()
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return select_index
         else: # Case for the first page
             for z in range(start_num, page_num*10):
@@ -1350,18 +1350,18 @@ def choose_del_assm(): # Select the assessment you want to remove
             while k != key.RIGHT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
                 k = readkey()
             os.system("cls")
-            if k == key.RIGHT:
+            if k == key.RIGHT: # When RIGHT arrow key is pressed
                 page_num += 1
                 start_num += 10
                 select_index = start_num + 1
-            elif k == key.UP and select_index > 1:
+            elif k == key.UP and select_index > 1: # When UP arrow key is pressed
                 select_index -= 1
-            elif k == key.DOWN and select_index < page_num*10:
+            elif k == key.DOWN and select_index < page_num*10: # When DOWN arrow key is pressed
                 select_index += 1
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed 
                 leave = True
                 return schedule_function()
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return select_index
 #---------------------------------------------------------------------------------
 def show_all_assms(): # Show all the assessments scheduled
@@ -1436,10 +1436,10 @@ def show_all_assms(): # Show all the assessments scheduled
             while k != key.RIGHT and k != key.ESC:
                 k = readkey()
             os.system("cls")
-            if k == key.RIGHT:
+            if k == key.RIGHT: # When RIGHT arrow key is pressed
                 page_num += 1
                 start_num += 10
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 leave = True
     return schedule_function()
 #---------------------------------------------------------------------------------
@@ -1472,29 +1472,29 @@ def choose_subject(): # Select the subject of the assessment
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.UP and row <= 1:
+        if k == key.UP and row <= 1: # When UP arrow key is pressed
             if row-1 < 0:
                 row = 1
             else:
                 row = 0
-        elif k == key.DOWN and row >= 0:
+        elif k == key.DOWN and row >= 0: # When DOWN arrow key is pressed
             if row+1 > 1:
                 row = 0
             else:
                 row = 1
-        elif k == key.LEFT and col >= 0:
+        elif k == key.LEFT and col >= 0: # When LEFT arrow key is pressed
             if col-1 < 0:
                 col = 8
             else:
                 col -= 1
-        elif k == key.RIGHT and col <= 8:
+        elif k == key.RIGHT and col <= 8: # When RIGHT arrow key is pressed
             if col+1 > 8:
                 col = 0
             else:
                 col += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             return subject_list[row][col]
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def choose_assm_type(): # Select the assessment type
@@ -1519,19 +1519,19 @@ def choose_assm_type(): # Select the assessment type
         while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.LEFT and type_num >= 1:
+        if k == key.LEFT and type_num >= 1: # When LEFT arrow key is pressed
             if type_num-1 < 1:
                 type_num = len(type_list)
             else:
                 type_num -= 1
-        elif k == key.RIGHT and type_num <= len(type_list):
+        elif k == key.RIGHT and type_num <= len(type_list): # When RIGHT arrow key is pressed
             if type_num+1 > len(type_list):
                 type_num = 1
             else:
                 type_num += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             return type_list[type_num-1]
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def choose_month(): # Select the month you want to add your assessment
@@ -1561,37 +1561,37 @@ def choose_month(): # Select the month you want to add your assessment
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.UP and row >= 1:
+        if k == key.UP and row >= 1: # When UP arrow key is pressed
             if row-1 < 1:
                 row = 2
                 month += 6
             else:
                 row = 1
                 month -= 6
-        elif k == key.DOWN and row <= 2:
+        elif k == key.DOWN and row <= 2: # When DOWN arrow key is pressed
             if row+1 > 2:
                 row = 1
                 month -= 6
             else:
                 row = 2
                 month += 6
-        elif k == key.LEFT and col >= 1:
+        elif k == key.LEFT and col >= 1: # When LEFT arrow key is pressed
             if col-1 < 1:
                 col = 6
                 month += 5
             else:
                 col -= 1
                 month -= 1
-        elif k == key.RIGHT and col <= 6:
+        elif k == key.RIGHT and col <= 6: # When RIGHT arrow key is pressed
             if col+1 > 6:
                 col = 1
                 month -= 5
             else:
                 col += 1
                 month += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             return month
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def choose_deadline(month): # Select the date which students should submit/have their assessment
@@ -1646,24 +1646,24 @@ def choose_deadline(month): # Select the date which students should submit/have 
         while k != key.UP and k != key.DOWN and k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
             k = readkey()
         os.system("cls")
-        if k == key.UP and row > 0 and month_day[row-1][col] != " ":
+        if k == key.UP and row > 0 and month_day[row-1][col] != " ": # When UP arrow key is pressed
             day_num -= 7
             row -= 1
-        elif k == key.DOWN and row < len(month_day)-1 and month_day[row+1][col] != " ":
+        elif k == key.DOWN and row < len(month_day)-1 and month_day[row+1][col] != " ": # When DOWN arrow key is pressed
             day_num += 7
             row += 1
-        elif k == key.LEFT and col > 0 and month_day[row][col-1] != " ":
+        elif k == key.LEFT and col > 0 and month_day[row][col-1] != " ": # When LEFT arrow key is pressed
             day_num -= 1
             col -= 1
-        elif k == key.RIGHT and col < 6 and month_day[row][col+1] != " ":
+        elif k == key.RIGHT and col < 6 and month_day[row][col+1] != " ": # When RIGHT arrow key is pressed
             day_num += 1
             col += 1
-        elif k == key.ENTER:
+        elif k == key.ENTER: # When ENTER key is pressed
             if (month == int(current_month) and day_num <= int(current_day)) or date_exist(s[month-1], month_day[row][col]):
                 pass # the date expired or highlight in red ---> no respond
             else:
                 return day_num
-        elif k == key.ESC:
+        elif k == key.ESC: # When ESC key is pressed
             leave = True
 #---------------------------------------------------------------------------------
 def assm_time():
@@ -1827,7 +1827,7 @@ def resetpw_function(): # To reset password
                 if new_pw == old_pw: # Check if the new password is equal to old password
                     os.system("cls")
                     print("                                            The Password Should Not Be Same.")
-                elif new_pw == default_pw[password_index]:
+                elif new_pw == default_pw[password_index]: # Check if the new password equal to the original / default password
                     os.system("cls")
                     print("                                   The Password Should Not Be Same As Default Password.")
                 else:
@@ -1958,7 +1958,7 @@ def search_assm(inp): # To search assessments and show the result
     page_num = 1
     while True:
         os.system("cls")
-        if total_page_num == 1:
+        if total_page_num == 1: # Case for only one page in total
             date()
             print("                                                        Searching")
             print()
@@ -1978,9 +1978,9 @@ def search_assm(inp): # To search assessments and show the result
             k = readkey()
             while k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.ENTER:
+            if k == key.ENTER: # When ENTER key is pressed
                 return searching()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 os.system("cls")
                 return choose_class(3)
         elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not the last page
@@ -2001,13 +2001,13 @@ def search_assm(inp): # To search assessments and show the result
             k = readkey()
             while k != key.LEFT and k != key.RIGHT and k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.LEFT:
+            if k == key.LEFT: # When LEFT arrow key is pressed
                 page_num -= 1
-            elif k == key.RIGHT:
+            elif k == key.RIGHT: # When RIGHT arrow key is pressed
                 page_num += 1
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return searching()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 os.system("cls")
                 return choose_class(3)
         elif page_num == total_page_num: # Case for the last page
@@ -2030,11 +2030,11 @@ def search_assm(inp): # To search assessments and show the result
             k = readkey()
             while k != key.LEFT and k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.LEFT:
+            if k == key.LEFT: # When LEFT arrow key is pressed
                 page_num -= 1
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return searching()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 os.system("cls")
                 return choose_class(3)
         else: # Case for the first page
@@ -2055,11 +2055,11 @@ def search_assm(inp): # To search assessments and show the result
             k = readkey()
             while k != key.RIGHT and k != key.ENTER and k != key.ESC:
                 k = readkey()
-            if k == key.RIGHT:
+            if k == key.RIGHT: # When RIGHT arrow key is pressed
                 page_num += 1
-            elif k == key.ENTER:
+            elif k == key.ENTER: # When ENTER key is pressed
                 return searching()
-            elif k == key.ESC:
+            elif k == key.ESC: # When ESC key is pressed
                 os.system("cls")
                 return choose_class(3)
 #---------------------------------------------------------------------------------
@@ -2185,5 +2185,3 @@ while True:	# main program
     elif login_selection == "3": # Leave Program
         leave_msg()
         break
-
-#98%
