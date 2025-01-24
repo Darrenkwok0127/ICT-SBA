@@ -314,10 +314,12 @@ def admin_system(): # Admin account
     print()
     print("                                        <4>  Specific Period Arrangement")
     print()
+    print("                                        <5>  Reset Assessments Log")
+    print()
     print("                                       <ESC> Sign Out")
     print()
     k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != "4" and k != key.ESC:
+    while k != "1" and k != "2" and k != "3" and k != "4" and k != "5" and k != key.ESC:
         k = readkey()
     if k == "1": # When "1" is pressed
         os.system("cls")
@@ -329,6 +331,8 @@ def admin_system(): # Admin account
         return reset_request()
     elif k == "4": # When "4" is pressed
         return specific_period()
+    elif k == "5": # When "5" is pressed
+        return reset_assm_log()
     elif k == key.ESC: # When ESC is pressed
         return
 #---------------------------------------------------------------------------------
@@ -853,6 +857,49 @@ def specific_period(): # Updating the specific period by admin
                 elif k == key.ESC: # When ESC key is pressed
                     return admin_system()
 #---------------------------------------------------------------------------------
+def reset_assm_log(): # Clear All Assessment Logs data
+    os.system("cls")
+    admin_pw = get_adminpw_data()
+    date()
+    for temp in range(10):
+        print()
+    print("<Empty input> Exit".rjust(65))
+    print()
+    input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
+    print()
+    if input_admin_pw == "": # Return to previous page when empty input detected
+        return admin_setting()
+    else:
+        input_admin_pw = encrypted_pw(input_admin_pw)
+        if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
+            os.system("cls")
+            print("Administrator Password Incorrect.".rjust(75))
+            return reset_assm_log()
+        else:
+            os.system("cls")
+            date()
+            for temp in range(11):
+                print()
+            print("                                             Clear All Assessment Logs Data ?")
+            print()
+            print("                                       <ENTER> Confirm               <ESC> Back")
+            k = readkey()
+            while k != key.ENTER and k != key.ESC:
+                k = readkey()
+            if k == key.ENTER: # When ENTER key is pressed
+                clear_log()
+                os.system("cls")
+                date()
+                for i in range(11):
+                    print()
+                print("                                          Assessment Log Clear Successful.")
+                print()
+                print("                                             Press <ANY KEY> To Return")
+                readkey()
+            elif k == key.ESC: # When ESC key is pressed
+                None
+            return admin_system()
+#---------------------------------------------------------------------------------v
 def teachers_system(): # Teachers accounts
     get_defaultpw()
     os.system("cls")
@@ -1500,12 +1547,12 @@ def choose_subject(): # Select the subject of the assessment
 def choose_assm_type(): # Select the assessment type
     leave = False
     type_num = 1
-    type_list = ["HW", "QUIZ", "UT", "TEST", "DICT", "SBA"]
+    type_list = ["HW", "QUIZ", "UT", "TEST", "DICT"]
     while not leave:
         date()
         print("                                          Select and Confirm the Assessment Type")
         print()
-        print("%35s" % "", end = "")
+        print("%40s" % "", end = "")
         for x in range(len(type_list)):
             if x+1 != type_num:
                 print(type_list[x], end = "      ") # print rest of the item which are not selected
@@ -1958,7 +2005,7 @@ def search_assm(inp): # To search assessments and show the result
     page_num = 1
     while True:
         os.system("cls")
-        if total_page_num == 1: # Case for only one page in total
+        if total_page_num < 2: # Case for only one page in total
             date()
             print("                                                        Searching")
             print()
@@ -1971,7 +2018,7 @@ def search_assm(inp): # To search assessments and show the result
                 print()
                 for j in range(len(result)):
                     print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
-            print()
+                print()
             for x in range(20-len(result)):
                 print()
             print("                                         <ENTER> Search Again     <ESC> Return")
@@ -1986,16 +2033,11 @@ def search_assm(inp): # To search assessments and show the result
         elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not the last page
             date()
             print("                                                        Searching")
+            print()  
+            print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
             print()
-            if len(result) == 0:
-                print("                                         The search result for \"" + inp + "\" is as follow.")
-                print()
-                print("                                                    No assessment Found.")
-            else:    
-                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
-                print()
-                for j in range((page_num-1)*20, page_num*20):
-                    print("                                                 "+ "%3s" % str(j+1) + ". " + result[j])
+            for j in range((page_num-1)*20, page_num*20):
+                print("                                                 "+ "%3s" % str(j+1) + ". " + result[j])
             print()
             print("                  <LEFT> Previous Page     <RIGHT> Next Page     <ENTER> Search Again     <ESC> Return")
             k = readkey()
@@ -2013,16 +2055,11 @@ def search_assm(inp): # To search assessments and show the result
         elif page_num == total_page_num: # Case for the last page
             date()
             print("                                                        Searching")
+            print()   
+            print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
             print()
-            if len(result) == 0:
-                print("                                         The search result for \"" + inp + "\" is as follow.")
-                print()
-                print("                                                    No assessment Found.")
-            else:    
-                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
-                print()
-                for j in range((page_num-1)*20, len(result)):
-                    print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
+            for j in range((page_num-1)*20, len(result)):
+                print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
             print()
             for x in range(20-len(result)+(page_num-1)*20):
                 print()
@@ -2040,16 +2077,11 @@ def search_assm(inp): # To search assessments and show the result
         else: # Case for the first page
             date()
             print("                                                        Searching")
+            print()  
+            print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
             print()
-            if len(result) == 0:
-                print("                                         The search result for \"" + inp + "\" is as follow.")
-                print()
-                print("                                                    No assessment Found.")
-            else:    
-                print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
-                print()
-                for j in range(page_num*20):
-                    print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
+            for j in range(page_num*20):
+                print("                                                 " + "%3s" % str(j+1) + ". " + result[j])
             print()
             print("                               <RIGHT> Next Page     <ENTER> Search Again     <ESC> Return")
             k = readkey()
@@ -2171,6 +2203,24 @@ def update_exist_date(ed): # update the dates (specific period) in text file
                 f.write(ed[i][j] + "\n")
             else:
                 f.write(ed[i][j] + "")
+#---------------------------------------------------------------------------------
+def clear_log(): # Clear all the log become empty text file
+    for i in range(1, 4): # 2D-list for 12 files in each hw log folders
+        for j in range(4):
+            if j == 0:
+                form_char = "A"
+            elif j == 1:
+                form_char = "B"
+            elif j == 2:
+                form_char = "C"
+            else:
+                form_char = "D"
+            f1 = open(path + "\\" + "Junior_hw_log" + "\\" + str(i) + form_char + "_assessments_hw_log.txt", "w")
+            f2 = open(path + "\\" + "Senior_hw_log" + "\\" + str(i+3) + form_char + "_assessments_hw_log.txt", "w")
+            f1.write("")
+            f2.write("")
+            f1.close()
+            f2.close()
 #---------------------------------------------------------------------------------
 while True:	# main program
     login_selection = main_menu()
