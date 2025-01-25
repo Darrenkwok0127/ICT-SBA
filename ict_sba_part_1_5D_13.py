@@ -7,7 +7,7 @@ import maskpass
 
 def date(): # Output the date of today
     get_date()
-    print("\t\t\t\t\t\t\t\t\t\t\t\t\t    ", end = "")
+    print("                                                                                                            ", end = "")
     print(current_date) # Output date
 def get_date(): # Getting current date from computer
     global current_date, current_month, current_year, next_year, current_day
@@ -17,7 +17,7 @@ def get_date(): # Getting current date from computer
     current_month = current.strftime("%m") # Month
     current_year = current.strftime("%Y") # Year
     next_year = int(current_year) + 1 # Find the number of next year
-#-------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------   
 def system_name(): # Output the title
     print(
 """                     █████╗  ██████╗ ██████╗███████╗ ██████╗ ██████╗███╗   ███╗███████╗███╗  ██╗████████╗
@@ -27,12 +27,12 @@ def system_name(): # Output the title
                     ██║  ██║██████╔╝██████╔╝███████╗██████╔╝██████╔╝██║ ╚═╝ ██║███████╗██║ ╚███║   ██║   
                     ╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚══╝   ╚═╝   """)
     print("""
- ██████╗ █████╗ ██╗  ██╗███████╗██████╗ ██╗   ██╗██╗     ███████╗   ██████╗██╗   ██╗ ██████╗████████╗███████╗███╗   ███╗
-██╔════╝██╔══██╗██║  ██║██╔════╝██╔══██╗██║   ██║██║     ██╔════╝  ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
-╚█████╗ ██║  ╚═╝███████║█████╗  ██║  ██║██║   ██║██║     █████╗    ╚█████╗  ╚████╔╝ ╚█████╗    ██║   █████╗  ██╔████╔██║
- ╚═══██╗██║  ██╗██╔══██║██╔══╝  ██║  ██║██║   ██║██║     ██╔══╝     ╚═══██╗  ╚██╔╝   ╚═══██╗   ██║   ██╔══╝  ██║╚██╔╝██║
-██████╔╝╚█████╔╝██║  ██║███████╗██████╔╝╚██████╔╝███████╗███████╗  ██████╔╝   ██║   ██████╔╝   ██║   ███████╗██║ ╚═╝ ██║
-╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""")
+ ██████╗ █████╗ ██╗  ██╗███████╗██████╗ ██╗   ██╗██╗     ███████╗   ██████╗██╗   ██╗ ██████╗████████╗███████╗███╗   ███╗
+██╔════╝██╔══██╗██║  ██║██╔════╝██╔══██╗██║   ██║██║     ██╔════╝  ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
+╚█████╗ ██║  ╚═╝███████║█████╗  ██║  ██║██║   ██║██║     █████╗    ╚█████╗  ╚████╔╝ ╚█████╗    ██║   █████╗  ██╔████╔██║
+ ╚═══██╗██║  ██╗██╔══██║██╔══╝  ██║  ██║██║   ██║██║     ██╔══╝     ╚═══██╗  ╚██╔╝   ╚═══██╗   ██║   ██╔══╝  ██║╚██╔╝██║
+██████╔╝╚█████╔╝██║  ██║███████╗██████╔╝╚██████╔╝███████╗███████╗  ██████╔╝   ██║   ██████╔╝   ██║   ███████╗██║ ╚═╝ ██║
+╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""")
 #-------------------------------------------------------------------------------------------------------
 def leave_msg(): # Leave message
     os.system("cls")
@@ -245,6 +245,7 @@ def login(): # Login Page
 #---------------------------------------------------------------------------------
 def forget_pw(): # Forget Password
     global request
+    get_defaultpw()
     print()
     print()
     print("                                                  Forget your password? ")
@@ -260,7 +261,20 @@ def forget_pw(): # Forget Password
         else: # Teachers username detected
             check, username_index = linear_search(login_name, inp_name) # Check if teacher username exists
             found, temp = linear_search(request, str(username_index)) # Check if it didn't send request before
-        if check and not found: # teacher username exists and request send for the first time
+        if check and password[username_index] == default_pw[username_index]:
+            os.system("cls")
+            date()
+            system_name()
+            print()
+            print()
+            print()
+            print(Fore.RED + "                                                     Request Decline" + Fore.RESET)
+            print()
+            print("                                                Default Password Detected")
+            print()
+            print("                                                Press <ANY KEY> To Return")
+            readkey()
+        elif check and not found: # teacher username exists and request send for the first time
             os.system("cls")
             date()
             system_name()
@@ -273,9 +287,9 @@ def forget_pw(): # Forget Password
             print()
             print("                                 Administrator Will Reset Your Password To Default ASAP")
             print()
-            print("                                               Press <ANY KEY> To Continue")
+            print("                                                Press <ANY KEY> To Return")
             readkey()
-        elif found: # requset exists
+        elif found: # request exists
             os.system("cls")
             date()
             system_name()
@@ -432,7 +446,7 @@ def add_class(index): # Assign Class to teachers
                 date()
                 for i in range(10):
                     print()
-                print("                                           This Class Had Already Assigned.")
+                print("                                        This Class Has Already Been Assigned.")
                 print()
                 print("                                              Press <ANY KEY> To Return")
                 readkey()
@@ -629,6 +643,8 @@ def create_acc_function(): # To create a new teacher account
     found = False
     date()
     admin_pw = get_adminpw_data()
+    for line in range(10):
+        print()
     print("<Empty input> Exit".rjust(65))
     print()
     input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
@@ -687,35 +703,40 @@ def create_acc_function(): # To create a new teacher account
                             print("The New Password Does Not Meet Requirements".rjust(77))
 #---------------------------------------------------------------------------------
 def delete_acc_function(): # To delete teachers' account
-    temp = 0
     date()
-    admin_pw = get_adminpw_data()
-    print("<Empty input> Exit".rjust(65))
-    print()
-    input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
-    print()
-    if input_admin_pw == "": # Return to previous page when empty input detected
+    if len(login_name) == 1:
+        for line in range(10):
+            print()
+        print("                                            There are no Teacher(s) Account")
+        print()
+        print("                                                Press <ANY KEY> To Return")
+        readkey()
+        os.system("cls")
         return admin_setting()
     else:
-        input_admin_pw = encrypted_pw(input_admin_pw)
-        if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
-            os.system("cls")
-            print("Administrator Password Incorrect.".rjust(75))
-            return delete_acc_function()
+        temp = 0
+        admin_pw = get_adminpw_data()
+        for line in range(10):
+            print()
+        print("<Empty input> Exit".rjust(65))
+        print()
+        input_admin_pw = input("Enter the Administrator Password: ".rjust(61))
+        print()
+        if input_admin_pw == "": # Return to previous page when empty input detected
+            return admin_setting()
         else:
-            found = False
-            while not(found):
-                if temp == 1:
-                    print("<Empty input> Exit".rjust(65))
-                    print()
-                input_accname = input("\t\t\t   Enter the Account Username you want to delete: ")
-                if input_accname == "": # Return to previous page when empty input detected
-                    return admin_setting()
-                    break
-                else: # Input detected
-                    check, index_user = linear_search(login_name, input_accname)
-                    if check and index_user != 0: # Username found and username is not admin 
-                        found = True
+            input_admin_pw = encrypted_pw(input_admin_pw)
+            if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
+                os.system("cls")
+                print("Administrator Password Incorrect.".rjust(75))
+                return delete_acc_function()
+            else:
+                while True:
+                    os.system("cls")
+                    index_user = choose_teachers_acc()
+                    if index_user == None:
+                        break
+                    else:
                         del login_name[index_user]
                         del password[index_user]
                         del default_pw[index_user]
@@ -727,16 +748,156 @@ def delete_acc_function(): # To delete teachers' account
                         os.system("cls")
                         for i in range(12):
                             print()
-                        print("\t\t\t\t\t      ACCOUNT DELETE SUCCESSFUL")
+                        print("                                                 ACCOUNT DELETE SUCCESSFUL")
                         print()
-                        print("\t\t\t\t\t       Press <ANY KEY> To Exit")
-                        readkey()
-                        return admin_setting()
-                    else: # Username not found
-                        temp = 1
-                        os.system("cls")
-                        print("                                    Username not found / Invalid. Please try it again")
-                        date()
+                        print("                                                          Continue?")
+                        print()
+                        print("                                       <ENTER> Continue               <ESC> Return")
+                        k = readkey()
+                        while k != key.ESC and k!= key.ENTER:
+                            k = readkey()
+                        if k == key.ENTER: # When ENTER key is pressed
+                            pass
+                        elif k == key.ESC:
+                            return admin_setting()
+#---------------------------------------------------------------------------------
+def choose_teachers_acc(): # Select the assessment you want to remove
+    teachers_acc_num = len(login_name) - 1 # Exclude admin account
+    total_page_num = -(-teachers_acc_num//10)
+    start_num = 1
+    page_num = 1
+    select_index = 1
+    while True:
+        if teachers_acc_num == 0:
+            print()
+            date()
+            for line in range(10):
+                print()
+            print("                                            There are no Teacher(s) Account")
+            print()
+            print("                                                Press <ANY KEY> To Return")
+            readkey()
+            os.system("cls")
+            return admin_setting()
+        else:
+            date()
+            print("        Page "+ str(page_num) +"                   Select And Confirm the Teachers Account You want to Delete: ")
+            print()
+            if total_page_num < 2: # Case for only one page in total
+                blank_line = 0
+                for i in range(1, len(login_name)):
+                    if i != select_index:
+                        print("\t\t\t\t\t\t\t"+ login_name[i])
+                    else:
+                        print("\t\t\t\t\t\t\t"+ Fore.GREEN + login_name[i] + Fore.RESET) # Show the selecting item using green colour text
+                    print()
+                    blank_line += 2
+                for j in range(21-blank_line):
+                    print()
+                print("                                                  <UP>     <DOWN>")
+                print()
+                print("                                        <ENTER> Confirm     <ESC> Leave")
+                k = readkey()
+                while k != key.ESC and k != key.ENTER and k != key.UP and k != key.DOWN:
+                    k = readkey()
+                os.system("cls")
+                if k == key.ESC: # When ESC key is pressed
+                    return admin_setting()
+                elif k == key.ENTER: # When ENTER key is pressed
+                    return select_index
+                elif k == key.UP and select_index > 1: # When UP arrow key is pressed
+                    select_index -= 1
+                elif k == key.DOWN and select_index < teachers_acc_num: # When DOWN arrow key is pressed
+                    select_index += 1
+            elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
+                for x in range(start_num, page_num*10+1):
+                    if x != select_index:
+                        print("\t\t\t\t\t\t\t"+ login_name[x])
+                    else:
+                        print("\t\t\t\t\t\t\t"+ Fore.GREEN + login_name[x] + Fore.RESET) # Show the selecting item using green colour text
+                    print()
+                print()
+                print("                              <UP>     <DOWN>     <LEFT> Previous Page     <RIGHT> Next Page")
+                print()
+                print("                                        <ENTER> Confirm     <ESC> Leave")
+                k = readkey()
+                while k != key.LEFT and k != key.RIGHT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
+                    k = readkey()
+                os.system("cls")
+                if k == key.LEFT: # When LEFT arrow key is pressed
+                    page_num -= 1
+                    start_num -= 10
+                    select_index = start_num
+                elif k == key.RIGHT: # When RIGHT arrow key is pressed
+                    page_num += 1
+                    start_num += 10
+                    select_index = start_num
+                elif k == key.UP and select_index > start_num: # When UP arrow key is pressed
+                    select_index -= 1
+                elif k == key.DOWN and select_index < page_num*10: # When DOWN arrow key is pressed
+                    select_index += 1
+                elif k == key.ESC: # When ESC key is pressed
+                    return admin_setting()
+                elif k == key.ENTER: # When ENTER key is pressed
+                    return select_index
+            elif page_num == total_page_num: # Case for the last page
+                blank_line = 0
+                for y in range(start_num, len(login_name)):
+                    if y != select_index:
+                        print("\t\t\t\t\t\t\t"+ login_name[y])
+                    else:
+                        print("\t\t\t\t\t\t\t"+ Fore.GREEN + login_name[y] + Fore.RESET) # Show the selecting item using green colour text
+                    print()
+                    blank_line += 2
+                for j in range(21-blank_line):
+                    print()
+                print("                                       <UP>     <DOWN>     <LEFT> Previous Page")
+                print()
+                print("                                        <ENTER> Confirm     <ESC> Leave")
+                k = readkey()
+                while k != key.LEFT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
+                    k = readkey()
+                os.system("cls")
+                if k == key.LEFT: # When LEFT arrow key is pressed
+                    page_num -= 1
+                    start_num -= 10
+                    select_index = start_num
+                elif k == key.UP and select_index > start_num: # When UP arrow key is pressed
+                    select_index -= 1
+                elif k == key.DOWN and select_index < teachers_acc_num: # When DOWN arrow key is pressed
+                    select_index += 1
+                elif k == key.ESC: # When ESC key is pressed
+                    leave = True
+                    return schedule_function()
+                elif k == key.ENTER: # When ENTER key is pressed
+                    return select_index
+            else: # Case for the first page
+                for z in range(start_num, page_num*10+1):
+                    if z != select_index:
+                        print("\t\t\t\t\t\t\t"+ login_name[z])
+                    else:
+                        print("\t\t\t\t\t\t\t"+ Fore.GREEN + login_name[z] + Fore.RESET) # Show the selecting item using green colour text
+                    print()
+                print()
+                print("                                       <UP>     <DOWN>     <RIGHT> Next Page")
+                print()
+                print("                                        <ENTER> Confirm     <ESC> Leave")
+                k = readkey()
+                while k != key.RIGHT and k != key.UP and k != key.DOWN and k != key.ESC and k != key.ENTER:
+                    k = readkey()
+                os.system("cls")
+                if k == key.RIGHT: # When RIGHT arrow key is pressed
+                    page_num += 1
+                    start_num += 10
+                    select_index = start_num
+                elif k == key.UP and select_index > 1: # When UP arrow key is pressed
+                    select_index -= 1
+                elif k == key.DOWN and select_index < page_num*10: # When DOWN arrow key is pressed
+                    select_index += 1
+                elif k == key.ESC: # When ESC key is pressed 
+                    return admin_setting()
+                elif k == key.ENTER: # When ENTER key is pressed
+                    return select_index
 #---------------------------------------------------------------------------------
 def reset_request(): # To approve the request from the teachers
     leave = False
@@ -868,7 +1029,7 @@ def reset_assm_log(): # Clear All Assessment Logs data
     input_admin_pw = input("Enter the Administrator Password: ".rjust(64))
     print()
     if input_admin_pw == "": # Return to previous page when empty input detected
-        return admin_setting()
+        return admin_system()
     else:
         input_admin_pw = encrypted_pw(input_admin_pw)
         if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
@@ -1169,14 +1330,14 @@ def display_assm(): # Display Assessments
         print()
         for i in range(len(display)):
             if num % 2 != 0:
-                print("\t\t\t    ", display[i], end = "")
+                print("                         ", display[i], end = "\t")
             else:
-                print("\t\t\t    ", display[i], end = "\n\n")
+                print("                         ", display[i], end = "\n\n")
                 row_num += 1
             num += 1
         if k == len(display) and len(assm) > len(display):
             row_num += 1
-            print("\t\t\t And More.....")
+            print("                      And More.....")
         for j in range(17-row_num):
             print()
 #---------------------------------------------------------------------------------
@@ -1423,7 +1584,7 @@ def show_all_assms(): # Show all the assessments scheduled
         print()
         if total_page_num < 2: # Case for only have one page in total
             for i in range(len(assm)):
-                print("\t\t\t\t\t\t"+ assm[i][0])
+                print("\t\t\t\t\t"+ assm[i][0] + "\t" + assm[i][1] + " hour(s)")
                 print()
                 blank_line += 2
             for j in range(23-blank_line):
@@ -1435,7 +1596,7 @@ def show_all_assms(): # Show all the assessments scheduled
             leave = True
         elif page_num > 1 and page_num < total_page_num: # Case for more than one pages but not in the last page
             for x in range(start_num, page_num*10):
-                print("\t\t\t\t\t\t"+ assm[x][0])
+                print("\t\t\t\t\t"+ assm[x][0] + "\t" + assm[x][1] + " hour(s)")
                 print()
             print()
             print()
@@ -1456,7 +1617,7 @@ def show_all_assms(): # Show all the assessments scheduled
         elif page_num == total_page_num: # Case for the last page
             blank_line = 0
             for y in range(start_num, len(assm)):
-                print("\t\t\t\t\t\t"+ assm[y][0])
+                print("\t\t\t\t\t"+ assm[y][0] + "\t" + assm[y][1] + " hour(s)")
                 print()
                 blank_line += 2
             for j in range(23-blank_line):
@@ -1473,7 +1634,7 @@ def show_all_assms(): # Show all the assessments scheduled
                 leave = True
         else: # Case for the first page
             for z in range(start_num, page_num*10):
-                print("\t\t\t\t\t\t"+ assm[z][0])
+                print("\t\t\t\t\t"+ assm[z][0] + "\t" + assm[z][1] + " hour(s)")
                 print()
             print()
             print()
