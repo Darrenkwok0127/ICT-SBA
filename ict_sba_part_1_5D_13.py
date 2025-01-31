@@ -817,29 +817,43 @@ def delete_acc(): # To delete teachers' account
                     if index_user == None:
                         break
                     else:
-                        del login_name[index_user]
-                        del password[index_user]
-                        del default_pw[index_user]
-                        del class_list[index_user]
-                        update.username()
-                        update.password()
-                        update.defaultpw()
-                        update.classlist()
-                        os.system("cls")
                         for i in range(12):
                             print()
-                        print("                                                 ACCOUNT DELETE SUCCESSFUL")
+                        print("                                       User's ["+ login_name[index_user] +"] Account Will Be Deleted")
                         print()
-                        print("                                                          Continue?")
+                        print("                                                         Confirm?")
                         print()
-                        print("                                       <ENTER> Continue               <ESC> Return")
+                        print("                                       <ENTER> Confirm               <ESC> Back")
                         k = readkey()
-                        while k != key.ESC and k!= key.ENTER:
+                        while k != key.ENTER and k != key.ESC:
                             k = readkey()
                         if k == key.ENTER: # When ENTER key is pressed
+                            os.system("cls")
+                            del login_name[index_user]
+                            del password[index_user]
+                            del default_pw[index_user]
+                            del class_list[index_user]
+                            update.username()
+                            update.password()
+                            update.defaultpw()
+                            update.classlist()
+                            os.system("cls")
+                            for i in range(12):
+                                print()
+                            print("                                                 ACCOUNT DELETE SUCCESSFUL")
+                            print()
+                            print("                                                          Continue?")
+                            print()
+                            print("                                       <ENTER> Continue               <ESC> Return")
+                            k = readkey()
+                            while k != key.ESC and k != key.ENTER:
+                                k = readkey()
+                            if k == key.ENTER: # When ENTER key is pressed
+                                pass
+                            elif k == key.ESC: # When ESC key is pressed
+                                return admin_setting()
+                        elif k == key.ESC: # When ESC key is pressed
                             pass
-                        elif k == key.ESC:
-                            return admin_setting()
 #---------------------------------------------------------------------------------
 def choose_teachers_acc(): # Select the assessment you want to remove
     teachers_acc_num = len(login_name) - 1 # Exclude admin account
