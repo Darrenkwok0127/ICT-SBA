@@ -183,7 +183,7 @@ def print_date(): # Output the date of today
     print(current_date) # Output date
 #-------------------------------------------------------------------------------------------------------   
 def system_name(): # Output the title
-    print(
+    print(Fore.BLUE +
 """                     █████╗  ██████╗ ██████╗███████╗ ██████╗ ██████╗███╗   ███╗███████╗███╗  ██╗████████╗
                     ██╔══██╗██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝████╗ ████║██╔════╝████╗ ██║╚══██╔══╝
                     ███████║╚█████╗ ╚█████╗ █████╗  ╚█████╗ ╚█████╗ ██╔████╔██║█████╗  ██╔██╗██║   ██║   
@@ -196,20 +196,22 @@ def system_name(): # Output the title
 ╚█████╗ ██║  ╚═╝███████║█████╗  ██║  ██║██║   ██║██║     █████╗    ╚█████╗  ╚████╔╝ ╚█████╗    ██║   █████╗  ██╔████╔██║
  ╚═══██╗██║  ██╗██╔══██║██╔══╝  ██║  ██║██║   ██║██║     ██╔══╝     ╚═══██╗  ╚██╔╝   ╚═══██╗   ██║   ██╔══╝  ██║╚██╔╝██║
 ██████╔╝╚█████╔╝██║  ██║███████╗██████╔╝╚██████╔╝███████╗███████╗  ██████╔╝   ██║   ██████╔╝   ██║   ███████╗██║ ╚═╝ ██║
-╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""")
+╚═════╝  ╚════╝ ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚══════╝  ╚═════╝    ╚═╝   ╚═════╝    ╚═╝   ╚══════╝╚═╝     ╚═╝""" + Fore.RESET)
 #-------------------------------------------------------------------------------------------------------
 def leave_msg(): # Leave message
     os.system("cls")
     print_date()
     system_name()
-    for x in range(4):
+    for x in range(3):
         print()
+    print(Fore.CYAN)
     print("                            ██████╗   █████╗   █████╗  ██████╗  ██████╗  ██╗   ██╗ ███████╗ ██╗")
     print("                           ██╔════╝  ██╔══██╗ ██╔══██╗ ██╔══██╗ ██╔══██╗ ╚██╗ ██╔╝ ██╔════╝ ██║")
     print("                           ██║  ██╗  ██║  ██║ ██║  ██║ ██║  ██║ ██████╦╝  ╚████╔╝  █████╗   ██║")
     print("                           ██║  ╚██╗ ██║  ██║ ██║  ██║ ██║  ██║ ██╔══██╗   ╚██╔╝   ██╔══╝   ╚═╝")
     print("                           ╚██████╔╝ ╚█████╔╝ ╚█████╔╝ ██████╔╝ ██████╦╝    ██║    ███████╗ ██╗")
     print("                            ╚═════╝   ╚════╝   ╚════╝  ╚═════╝  ╚═════╝     ╚═╝    ╚══════╝ ╚═╝")
+    print(Fore.RESET)
 #-------------------------------------------------------------------------------------------------------
 def main_menu(): # main menu
     os.system("cls")
@@ -217,12 +219,13 @@ def main_menu(): # main menu
     system_name()
     print()
     print()
-    print()
+    print(Fore.CYAN)
     print("                                                  <1>  Login")
     print()
     print("                                                  <2>  Forget Password")
     print()
     print("                                                 <ESC> Exit")
+    print(Fore.RESET)
     k = readkey() # reading keyboard input
     while k != "1" and k != "2" and k != key.ESC:
         k = readkey()
@@ -301,9 +304,9 @@ def login(): # Login Page
                 get.classlist()
                 for x in range(12):
                     print()
-                print("LOGIN SUCCESSFUL".rjust(64))
+                print(Fore.GREEN + "LOGIN SUCCESSFUL".rjust(64))
                 print()
-                print("Press <ANY KEY> to continue.".rjust(69))
+                print("Press <ANY KEY> to continue.".rjust(69) + Fore.RESET)
                 readkey()
                 return admin_system()
             else:
@@ -312,15 +315,15 @@ def login(): # Login Page
                     get.classlist()
                     for x in range(12):
                         print()
-                    print("LOGIN SUCCESSFUL".rjust(64))
+                    print(Fore.GREEN + "LOGIN SUCCESSFUL".rjust(64))
                     print()
-                    print("Press <ANY KEY> to continue.".rjust(69))
+                    print("Press <ANY KEY> to continue.".rjust(69) + Fore.RESET)
                     readkey()
                     return teachers_system() 
             os.system("cls")
             print_date()
             system_name()
-            print("The username/password is incorrect.".rjust(77))
+            print(Fore.RED + "The username/password is incorrect.".rjust(77) + Fore.RESET)
             print()
 #---------------------------------------------------------------------------------
 def forget_pw(): # Forget Password
@@ -348,9 +351,9 @@ def forget_pw(): # Forget Password
             print()
             print()
             print()
-            print(Fore.RED + "                                                     Request Decline" + Fore.RESET)
+            print(Fore.RED + "                                                     Request Decline")
             print()
-            print("                                                Default Password Detected")
+            print("                                                Default Password Detected" + Fore.RESET)
             print()
             print("                                                Press <ANY KEY> To Return")
             readkey()
@@ -363,9 +366,9 @@ def forget_pw(): # Forget Password
             print()
             print()
             print()
-            print("                                               Reset Password Request Sent")
+            print(Fore.GREEN + "                                               Reset Password Request Sent")
             print()
-            print("                                 Administrator Will Reset Your Password To Default ASAP")
+            print("                                 Administrator Will Reset Your Password To Default ASAP" + Fore.RESET)
             print()
             print("                                                Press <ANY KEY> To Return")
             readkey()
@@ -376,9 +379,9 @@ def forget_pw(): # Forget Password
             print()
             print()
             print()
-            print("                                                  Reset Request Pending")
+            print(Fore.RED + "                                                  Reset Request Pending")
             print()
-            print("                                          Please Wait For Administrator to Reset")
+            print("                                          Please Wait For Administrator to Reset" + Fore.RESET)
             print()
             print("                                                Press <ANY KEY> To Return")
             readkey()
@@ -386,7 +389,7 @@ def forget_pw(): # Forget Password
             os.system("cls")
             print_date()
             system_name()
-            print("                                         Username Not Found. Please Enter Again.")
+            print(Fore.RED + "                                         Username Not Found. Please Enter Again." + Fore.RESET)
             return forget_pw()
 #---------------------------------------------------------------------------------
 def admin_system(): # Admin account
@@ -397,20 +400,20 @@ def admin_system(): # Admin account
     print("                                                    Welcome Back." , login_name[username_index])
     for x in range(8):
         print()
-    print("                                        <1>  Teachers Class Information")
+    print(Fore.CYAN + "                                        <1>  Teachers Class Information")
     print()
     print("                                        <2>  Settings (Administrator)")
     print()
     if len(request) == 0: # No request
-        print("                                        <3>  Reset Password Request")
+        print("                                        <3>  Reset Password Request" + Fore.RESET)
     else: # Request received
-        print("                                        <3>" + Fore.RED + "  Reset Password Request *", Fore.RESET)
+        print(Fore.RED + "                                        <3>  Reset Password Request *"+ Fore.RESET)
     print()
-    print("                                        <4>  Specific Period Arrangement")
+    print(Fore.CYAN + "                                        <4>  Specific Period Arrangement")
     print()
     print("                                        <5>  Reset Assessments Log")
     print()
-    print("                                       <ESC> Sign Out")
+    print("                                       <ESC> Sign Out" + Fore.RESET)
     print()
     k = readkey()
     while k != "1" and k != "2" and k != "3" and k != "4" and k != "5" and k != key.ESC:
@@ -446,7 +449,7 @@ def teachers_info(): # Change teachers' class information
             return show_assigned_class(teachers_acc_index)
         else: # No username found
             os.system("cls")
-            print("                                          User Not Found / Wrong Input.")
+            print(Fore.RED + "                                          User Not Found / Wrong Input." + Fore.RESET)
             return teachers_info()
 #---------------------------------------------------------------------------------
 def show_assigned_class(index):
@@ -691,15 +694,16 @@ def admin_setting(): # Admin Setting
     os.system("cls")
     print_date()
     print("\t\t\t\t\t\t   Administrator Setting")
-    for x in range(8):
+    for x in range(7):
         print()
+    print(Fore.CYAN)
     print("\t\t\t\t         <1>  Reset Password")
     print()
     print("\t\t\t\t         <2>  Create Account")
     print()
     print("\t\t\t\t         <3>  Delete Account")
     print()
-    print("\t\t\t\t        <ESC> Back")
+    print("\t\t\t\t        <ESC> Back" + Fore.RESET)
     print()
     k = readkey()
     while k != "1" and k != "2" and k != "3" and k != key.ESC:
@@ -735,7 +739,7 @@ def create_acc(): # To create a new teacher account
         input_admin_pw = encrypted_pw(input_admin_pw)
         if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
             os.system("cls")
-            print("Administrator Password Incorrect.".rjust(75))
+            print(Fore.RED + "Administrator Password Incorrect.".rjust(75) + Fore.RESET)
             return create_acc()
         else:
             os.system("cls")
@@ -754,7 +758,7 @@ def create_acc(): # To create a new teacher account
                     return admin_setting()
                 elif check: # Same username found
                     os.system("cls")
-                    print("Username Has Been Used. Please Try Again".rjust(77)) 
+                    print(Fore.RED + "Username Has Been Used. Please Try Again".rjust(77) + Fore.RESET) 
                 else:
                     print()
                     add_password = input("\t\t\t         Enter New Teacher Account Password: ")
@@ -773,23 +777,23 @@ def create_acc(): # To create a new teacher account
                             os.system("cls")
                             for x in range(12):
                                 print()
-                            print("\t\t\t\t\t         SIGN UP SUCCESSFUL")
+                            print(Fore.GREEN + "\t\t\t\t\t         SIGN UP SUCCESSFUL")
                             print()
-                            print("\t\t\t\t\t       Press <ANY KEY> To Exit")
+                            print("\t\t\t\t\t       Press <ANY KEY> To Exit" + Fore.RESET)
                             readkey()
                             return admin_setting()
                         else: # The new password does not fulfill the requiremenets
                             os.system("cls")
-                            print("The New Password Does Not Meet Requirements".rjust(77))
+                            print(Fore.RED + "The New Password Does Not Meet Requirements".rjust(77) + Fore.RESET)
 #---------------------------------------------------------------------------------
 def delete_acc(): # To delete teachers' account
     print_date()
     if len(login_name) == 1:
         for line in range(10):
             print()
-        print("                                            There are no Teacher(s) Account")
+        print(Fore.RED + "                                            There are no Teacher(s) Account")
         print()
-        print("                                                Press <ANY KEY> To Return")
+        print("                                                Press <ANY KEY> To Return" + Fore.RESET)
         readkey()
         os.system("cls")
         return admin_setting()
@@ -808,7 +812,7 @@ def delete_acc(): # To delete teachers' account
             input_admin_pw = encrypted_pw(input_admin_pw)
             if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
                 os.system("cls")
-                print("Administrator Password Incorrect.".rjust(75))
+                print(Fore.RED + "Administrator Password Incorrect.".rjust(75) + Fore.RESET)
                 return delete_acc()
             else:
                 while True:
@@ -819,9 +823,9 @@ def delete_acc(): # To delete teachers' account
                     else:
                         for i in range(12):
                             print()
-                        print("                                       User's ["+ login_name[index_user] +"] Account Will Be Deleted")
+                        print(Fore.GREEN + "                                       User's ["+ login_name[index_user] +"] Account Will Be Deleted")
                         print()
-                        print("                                                         Confirm?")
+                        print("                                                         Confirm?" + Fore.RESET)
                         print()
                         print("                                       <ENTER> Confirm               <ESC> Back")
                         k = readkey()
@@ -840,9 +844,9 @@ def delete_acc(): # To delete teachers' account
                             os.system("cls")
                             for i in range(12):
                                 print()
-                            print("                                                 ACCOUNT DELETE SUCCESSFUL")
+                            print(Fore.GREEN + "                                                 ACCOUNT DELETE SUCCESSFUL")
                             print()
-                            print("                                                          Continue?")
+                            print("                                                          Continue?" + Fore.RESET)
                             print()
                             print("                                       <ENTER> Continue               <ESC> Return")
                             k = readkey()
@@ -867,9 +871,9 @@ def choose_teachers_acc(): # Select the assessment you want to remove
             print_date()
             for line in range(10):
                 print()
-            print("                                            There are no Teacher(s) Account")
+            print(Fore.RED + "                                            There are no Teacher(s) Account")
             print()
-            print("                                                Press <ANY KEY> To Return")
+            print("                                                Press <ANY KEY> To Return" + Fore.RESET)
             readkey()
             os.system("cls")
             return admin_setting()
@@ -1003,9 +1007,9 @@ def reset_request(): # To approve the request from the teachers
             leave = True
             for i in range(11):
                 print()
-            print("                                     There is no reset password request from teachers")
+            print(Fore.RED + "                                     There is no reset password request from teachers")
             print()
-            print("                                               Press <ANY KEY> To Return")
+            print("                                               Press <ANY KEY> To Return" + Fore.RESET)
             readkey()
             return admin_system()
         else: # Request exists
@@ -1047,7 +1051,7 @@ def reset_request(): # To approve the request from the teachers
                 print_date()
                 for i in range(12):
                     print()
-                print("                                        Reset User's [" + login_name[int(current_req[select_index-1])] + "] Password to Default?")
+                print(Fore.GREEN + "                                        Reset User's [" + login_name[int(current_req[select_index-1])] + "] Password to Default?" + Fore.RESET)
                 print()
                 print("                                 <ENTER> Accept      <BACKSPACE> Decline      <ESC> Back")
                 k = readkey()
@@ -1063,9 +1067,9 @@ def reset_request(): # To approve the request from the teachers
                     print_date()
                     for i in range(10):
                         print()
-                    print("                                               Password Reset Successful.")
+                    print(Fore.GREEN + "                                               Password Reset Successful.")
                     print()
-                    print("                                               Press <ANY KEY> To Return")
+                    print("                                               Press <ANY KEY> To Return" + Fore.RESET)
                     readkey()
                     select_index = 1
                 elif k == key.BACKSPACE: # When BACKSPACE key is pressed
@@ -1073,9 +1077,9 @@ def reset_request(): # To approve the request from the teachers
                     del request[select_index-1]
                     update.forgetpw_request()
                     print_date()
-                    print("                                                   Request Declined")
+                    print(Fore.RED + "                                                   Request Declined")
                     print()
-                    print("                                               Press <ANY KEY> To Return")
+                    print("                                               Press <ANY KEY> To Return" + Fore.RESET)
                 elif k == key.ESC: # When ESC key is pressed
                     None
             elif k == key.ESC: # When ESC key is pressed, return to admin system
@@ -1099,9 +1103,9 @@ def specific_period(): # Updating the specific period by admin
                 print_date()
                 for i in range(10):
                     print()
-                print("                                            Specific Period Update SUCCESSFUL")
+                print(Fore.GREEN + "                                            Specific Period Update SUCCESSFUL")
                 print()
-                print("                                                         Continue ?")
+                print("                                                         Continue ?" + Fore.RESET)
                 print()
                 print("                                       <ENTER> Continue               <ESC> Return")
                 k = readkey()
@@ -1128,14 +1132,14 @@ def reset_assm_log(): # Clear All Assessment Logs data
         input_admin_pw = encrypted_pw(input_admin_pw)
         if input_admin_pw != admin_pw[0]: # Check if the admin password is correct
             os.system("cls")
-            print("Administrator Password Incorrect.".rjust(75))
+            print(Fore.RED + "Administrator Password Incorrect.".rjust(75) + Fore.RESET)
             return reset_assm_log()
         else:
             os.system("cls")
             print_date()
             for temp in range(11):
                 print()
-            print("                                             Clear All Assessment Logs Data ?")
+            print(Fore.RED + "                                             Clear All Assessment Logs Data ?" + Fore.RESET)
             print()
             print("                                       <ENTER> Confirm               <ESC> Back")
             k = readkey()
@@ -1147,9 +1151,9 @@ def reset_assm_log(): # Clear All Assessment Logs data
                 print_date()
                 for i in range(11):
                     print()
-                print("                                          Assessment Log Clear Successful.")
+                print(Fore.GREEN + "                                          Assessment Log Clear Successful.")
                 print()
-                print("                                             Press <ANY KEY> To Return")
+                print("                                             Press <ANY KEY> To Return" + Fore.RESET)
                 readkey()
             elif k == key.ESC: # When ESC key is pressed
                 None
@@ -1162,9 +1166,9 @@ def teachers_system(): # Teachers accounts
         print_date()
         for i in range(10):
             print()
-        print("                                                  First Login Detected")
+        print(Fore.GREEN + "                                                  First Login Detected")
         print()
-        print("                                Please Change your password. Press <ANY KEY> To Continue")
+        print("                                Please Change your password. Press <ANY KEY> To Continue" + Fore.RESET)
         readkey()
         os.system("cls")
         print()
@@ -1172,15 +1176,16 @@ def teachers_system(): # Teachers accounts
     else:
         print_date()
         print("                                                    Welcome Back." , login_name[username_index])
-        for x in range(8):
+        for x in range(7):
             print()
+        print(Fore.CYAN)
         print("                                        <1>  Schedule Assessments System")
         print()
         print("                                        <2>  Settings")
         print()
         print("                                        <3>  Searching")
         print()
-        print("                                       <ESC> Sign Out")
+        print("                                       <ESC> Sign Out" + Fore.RESET)
         k = readkey()
         while k != "1" and k != "2" and k != "3" and k != key.ESC:
             k = readkey()
@@ -1371,9 +1376,9 @@ def choose_class(key_num): # Select classes adding into teachers' account
         print_date()
         for i in range(10):
             print()
-        print("                                               Class Not yet Assigned.")
+        print(Fore.RED + "                                               Class Not yet Assigned.")
         print()
-        print("                                              Press <ANY KEY> To Return")
+        print("                                              Press <ANY KEY> To Return" + Fore.RESET)
         readkey()
         return teachers_system()
 #---------------------------------------------------------------------------------
@@ -1409,7 +1414,7 @@ def schedule(): # To open schedule system function
 #---------------------------------------------------------------------------------
 def display_assm(): # Display Assessments
     if len(assm) == 0:
-        print("                                          There is no asseessment assigned.")
+        print(Fore.RED + "                                          There is no asseessment assigned." + Fore.RESET)
         for x in range(21):
             print()
     else: # Displaying recent 6 assessments
@@ -1474,21 +1479,23 @@ def add_assms(): # Adding assessment
             assm_deadline = assm_format1 + " " + assm_format2
             time = count_time(assm_format1)
             if time >= 5:
-                for i in range(9):
+                for i in range(8):
                     print()
+                print(Fore.RED)
                 print("                            WARNING!! There are too many Assessments on a particular day !!!")
                 print()
                 print("                              The Assessment will schedule on ["+ assm_deadline + "]")
                 print()
-                print("                                                        Confirm ?")
+                print("                                                        Confirm ?" + Fore.RESET)
                 print()
                 print("                                        <ENTER> Confirm               <ESC> Back")
             else:
-                for i in range(11):
+                for i in range(10):
                     print()
+                print(Fore.GREEN)
                 print("                              The Assessment will schedule on ["+ assm_deadline + "]")
                 print()
-                print("                                                        Confirm ?")
+                print("                                                        Confirm ?" + Fore.RESET)
                 print()
                 print("                                        <ENTER> Confirm               <ESC> Back")
             k = readkey()
@@ -1519,9 +1526,9 @@ def del_assms(): # Remove assessment and confirm / not
         if selected_del_assm != None:
             for i in range(11):
                 print()
-            print("\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1][0] + "]")
+            print(Fore.GREEN + "\t\t\t\t   You want to Remove The Assessment ["+ assm[selected_del_assm-1][0] + "]")
             print()
-            print("\t\t\t\t\t\t\tConfirm ?")
+            print("\t\t\t\t\t\t\tConfirm ?" + Fore.RESET)
             print()
             print("\t\t\t\t\t<ENTER> Confirm\t\t\t<ESC> Back")
             k = readkey()
@@ -1985,12 +1992,12 @@ def assm_time():
             inp = float(inp)
             if inp <= 0 or inp > 5:
                 print_date()
-                print("                                                 Wrong Input! Enter Again.")
+                print(Fore.RED + "                                                 Wrong Input! Enter Again." + Fore.RESET)
             else:
                 return str(inp)
         except ValueError: # When input invaild data (string)
             print_date()
-            print("                                                 Wrong Input! Enter Again.")
+            print(Fore.RED + "                                                 Wrong Input! Enter Again." + Fore.RESET)
 #---------------------------------------------------------------------------------
 def choose_specific_period(month):
     global schedule_year
@@ -2083,11 +2090,12 @@ def teacher_setting(): # To open setting function
     os.system("cls")
     print_date()
     print("\t\t\t\t\t\t      Settings")
-    for x in range(8):
+    for x in range(7):
         print()
+    print(Fore.CYAN)
     print("\t\t\t\t          <1>  Reset Password")
     print()
-    print("\t\t\t\t         <ESC> Back")
+    print("\t\t\t\t         <ESC> Back" + Fore.RESET)
     k = readkey()
     while k != "1" and k != key.ESC:
         k = readkey()
@@ -2117,7 +2125,7 @@ def resetpw(): # To reset password
             old_pw = encrypted_pw(old_pw)
             if old_pw != password[password_index]: # Check if the old password is correct
                 os.system("cls")
-                print("The Old Password is incorrect".rjust(70))
+                print(Fore.RED + "The Old Password is incorrect".rjust(70) + Fore.RESET)
             else:
                 new_pw = input("                                        Enter the New Password: ")
                 if new_pw == "": # Return admin setting / teacher setting when empty input
@@ -2128,10 +2136,10 @@ def resetpw(): # To reset password
                 new_pw = encrypted_pw(new_pw)
                 if new_pw == old_pw: # Check if the new password is equal to old password
                     os.system("cls")
-                    print("                                            The Password Should Not Be Same.")
+                    print(Fore.RED + "                                            The Password Should Not Be Same." + Fore.RESET)
                 elif new_pw == default_pw[password_index] and password_index != 0: # Check if the new password equal to the original / default password
                     os.system("cls")
-                    print("                                   The Password Should Not Be Same As Default Password.")
+                    print(Fore.RED + "                                   The Password Should Not Be Same As Default Password." + Fore.RESET)
                 else:
                     re_enter_pw = input("                                        Enter the New Password again: ")
                     if re_enter_pw == "": # Return admin setting / teacher setting when empty input
@@ -2143,7 +2151,7 @@ def resetpw(): # To reset password
                         re_enter_pw = encrypted_pw(re_enter_pw)
                         os.system("cls")
                         if new_pw != re_enter_pw: # Input data twice and check if they are the same
-                            print("                                            Two New Password are not the same ")
+                            print(Fore.RED + "                                            Two New Password are not the same " + Fore.RESET)
                         else:
                             pw_ok = pw_check(new_pw)
                             if pw_ok:
@@ -2151,15 +2159,15 @@ def resetpw(): # To reset password
                                 update.password()
                                 for x in range(10):
                                     print()
-                                print("                                               RESET PASSWORD SUCCESSFUL")
+                                print(Fore.GREEN + "                                               RESET PASSWORD SUCCESSFUL")
                                 print()
                                 print("                                                  Please Login Again")
                                 print()
-                                print("                                             Press <ANY KEY> to continue.")
+                                print("                                             Press <ANY KEY> to continue." + Fore.RESET)
                                 readkey()
                                 return
                             else:
-                                print("                                       The New Password Does Not Meet Requirements")
+                                print(Fore.RED + "                                       The New Password Does Not Meet Requirements" + Fore.RESET)
 #---------------------------------------------------------------------------------
 def change_pw(): # Change password for first login
     while True:
@@ -2176,7 +2184,7 @@ def change_pw(): # Change password for first login
         new_pw = encrypted_pw(new_pw)
         if new_pw == default_pw[password_index]: # Check if the new password is equal to old password
             os.system("cls")
-            print("                                            The Password Should Not Be Same.")
+            print(Fore.RED + "                                            The Password Should Not Be Same." + Fore.RESET)
         else:
             re_enter_pw = input("                                        Enter the New Password again: ")
             if re_enter_pw == "": # Return when empty input
@@ -2185,7 +2193,7 @@ def change_pw(): # Change password for first login
                 re_enter_pw = encrypted_pw(re_enter_pw)
                 os.system("cls")
                 if new_pw != re_enter_pw: # Input data twice and check if they are the same
-                    print("                                            Two New Password are not the same ")
+                    print(Fore.RED + "                                            Two New Password are not the same " + Fore.RESET)
                 else:
                     pw_ok = pw_check(new_pw)
                     if pw_ok:
@@ -2193,13 +2201,13 @@ def change_pw(): # Change password for first login
                         update.password()
                         for x in range(12):
                             print()
-                        print("RESET PASSWORD SUCCESSFUL".rjust(68))
+                        print(Fore.Green + "RESET PASSWORD SUCCESSFUL".rjust(68))
                         print()
-                        print("Press <ANY KEY> to continue.".rjust(69))
+                        print("Press <ANY KEY> to continue.".rjust(69) + Fore.RESET)
                         readkey()
                         return teachers_system()
                     else:
-                        print("                                       The New Password Does Not Meet Requirements")
+                        print(Fore.RED + "                                       The New Password Does Not Meet Requirements" + Fore.RESET)
 #---------------------------------------------------------------------------------
 def pw_check(pw): # Check if password meet the requirements of password rules
     pw = decrypted_pw(pw) # Decrypted password
@@ -2267,7 +2275,7 @@ def search_assm(inp): # To search assessments and show the result
             if len(result) == 0: # Case for no result
                 print("                                         The search result for \"" + inp + "\" is as follow.")
                 print()
-                print("                                                    No assessment Found.")
+                print(Fore.RED + "                                                    No assessment Found." + Fore.RESET)
             else:    
                 print("                          The search result for \"" + inp + "\" is as follow. There are " + str(len(result)) + " result(s) found.")
                 print()
