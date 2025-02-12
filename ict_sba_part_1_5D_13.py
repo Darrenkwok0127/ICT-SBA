@@ -529,7 +529,7 @@ def add_class(index): # Assign Class to teachers
                 print_date()
                 for i in range(10):
                     print()
-                print("                                        This Class Has Already Been Assigned.")
+                print(Fore.RED + "                                        This Class Has Already Been Assigned." + Fore.RESET)
                 print()
                 print("                                              Press <ANY KEY> To Return")
                 readkey()
@@ -723,8 +723,6 @@ def admin_setting(): # Admin Setting
 #---------------------------------------------------------------------------------
 def create_acc(): # To create a new teacher account
     global login_name, password, default_pw, class_list
-    pw_ok = False
-    found = False
     print_date()
     admin_pw = get.adminpw_data()
     for line in range(10):
@@ -744,14 +742,12 @@ def create_acc(): # To create a new teacher account
         else:
             os.system("cls")
             print()
-            while not found:
+            while True:
                 print_date()
-                print("                Password must include at least 8 characters (at least 1 number, 1 capital letter and 1 small letter)")
-                print("                                       Password must not contain any blank space")
-                print()
-                print("<Empty input> Exit".rjust(65))
-                for y in range(3):
+                for y in range(10):
                     print()
+                print("<Empty input> Exit".rjust(65))
+                print()
                 add_username = input("\t\t\t         Enter New Teacher Account Username: ")
                 check, temp = linear_search(login_name, add_username)
                 if add_username == "": # Return to previous page when empty input detected
@@ -760,31 +756,30 @@ def create_acc(): # To create a new teacher account
                     os.system("cls")
                     print(Fore.RED + "Username Has Been Used. Please Try Again".rjust(77) + Fore.RESET) 
                 else:
+                    display_password = add_password = add_username + "12345"
+                    add_password = encrypted_pw(add_password)
+                    login_name = login_name + [add_username]
+                    password = password + [add_password]
+                    default_pw = default_pw + [add_password]
+                    class_list = class_list + [["Not yet Assigned"]]
+                    append_item(add_username, add_password, "Not yet Assigned")
+                    os.system("cls")
+                    for x in range(8):
+                        print()
+                    print(Fore.GREEN + "                                    Username: " + add_username + "     Default Password: " + display_password)
                     print()
-                    add_password = input("\t\t\t         Enter New Teacher Account Password: ")
-                    if add_password == "": # Return to previous page when empty input detected
+                    print("                                                   SIGN UP SUCCESSFUL")
+                    print()
+                    print("                                                       Continue ?" + Fore.RESET)
+                    print()
+                    print("                                         <ENTER> Continue        <ESC> Return")
+                    k = readkey()
+                    while k != key.ENTER and k != key.ESC:
+                        k = readkey()
+                    if k == key.ENTER:
+                        os.system("cls")
+                    elif k == key.ESC:
                         return admin_setting()
-                    else:
-                        add_password = encrypted_pw(add_password)
-                        pw_ok = pw_check(add_password)
-                        if pw_ok:
-                            found = True
-                            login_name = login_name + [add_username]
-                            password = password + [add_password]
-                            default_pw = default_pw + [add_password]
-                            class_list = class_list + [["Not yet Assigned"]]
-                            append_item(add_username, add_password, "Not yet Assigned")
-                            os.system("cls")
-                            for x in range(12):
-                                print()
-                            print(Fore.GREEN + "\t\t\t\t\t         SIGN UP SUCCESSFUL")
-                            print()
-                            print("\t\t\t\t\t       Press <ANY KEY> To Exit" + Fore.RESET)
-                            readkey()
-                            return admin_setting()
-                        else: # The new password does not fulfill the requiremenets
-                            os.system("cls")
-                            print(Fore.RED + "The New Password Does Not Meet Requirements".rjust(77) + Fore.RESET)
 #---------------------------------------------------------------------------------
 def delete_acc(): # To delete teachers' account
     print_date()
@@ -2201,7 +2196,7 @@ def change_pw(): # Change password for first login
                         update.password()
                         for x in range(12):
                             print()
-                        print(Fore.Green + "RESET PASSWORD SUCCESSFUL".rjust(68))
+                        print(Fore.GREEN + "RESET PASSWORD SUCCESSFUL".rjust(68))
                         print()
                         print("Press <ANY KEY> to continue.".rjust(69) + Fore.RESET)
                         readkey()
