@@ -108,7 +108,7 @@ class get:
         for i in range(len(assm_log)):
             assm_log[i] = assm_log[i].strip("\n")
 
-    def exist_date(m): # Getting the date data from text file
+    def exist_date(m, md, start_num): # Getting the date data from text file
         f = open("exist_date.txt", "r")
         ed = f.readlines()
         f.close()
@@ -116,6 +116,14 @@ class get:
             ed[i] = ed[i].strip("\n")
         for j in range(len(ed)):
             ed[j] = ed[j].split("\t")
+        for k in range(len(md)):
+            for l in range(len(md[k])):
+                if md[k][l] != 0:
+                    check_weekend = calendar.weekday(schedule_year,m,md[k][l])
+                    if check_weekend == 5 or check_weekend == 6:
+                        ed[m-1].append(str(md[k][l]))
+        if len(md) != 0:
+            update.exist_date(ed)
         return ed
 #---------------------------------------------------------------------------------
 class update: 
@@ -431,10 +439,12 @@ def admin_system(): # Admin account
     print()
     print("                                        <5>  Reset Assessments Log")
     print()
+    print("                                        <6>  Reset Specific Period")
+    print()
     print("                                       <ESC> Sign Out" + Fore.RESET)
     print()
     k = readkey()
-    while k != "1" and k != "2" and k != "3" and k != "4" and k != "5" and k != key.ESC():
+    while k != "1" and k != "2" and k != "3" and k != "4" and k != "5" and k != "6" and k != key.ESC():
         k = readkey()
     if k == "1": # When "1" is pressed
         os.system("cls")
@@ -448,6 +458,8 @@ def admin_system(): # Admin account
         return specific_period()
     elif k == "5": # When "5" is pressed
         return reset_assm_log()
+    elif k == "6": # When "6" is pressed
+        return reset_specific_period()
     elif k == key.ESC(): # When ESC is pressed
         return
 #---------------------------------------------------------------------------------
@@ -1172,7 +1184,45 @@ def reset_assm_log(): # Clear All Assessment Logs data
             elif k == key.ESC(): # When ESC key is pressed
                 None
             return admin_system()
-#---------------------------------------------------------------------------------v
+#---------------------------------------------------------------------------------
+def reset_specific_period():
+    month_list = ["[January]","[February]","[March]","[April]","[May]","[June]","[July]","[August]","[September]","[October]","[November]","[December]"]
+    while True:
+        os.system("cls")
+        item = choose_month()
+        if item != None:
+            temp = []
+            s = get.exist_date(item, temp, 0)
+            print_date()
+            for temp in range(11):
+                print()
+            print(Fore.RED + "                                         Clear "+ month_list[item-1] +" Specific Period Data ?" + Fore.RESET)
+            print()
+            print("                                       <ENTER> Confirm               <ESC> Back")
+            k = readkey()
+            while k != key.ENTER() and k != key.ESC():
+                k = readkey()
+            if k == key.ENTER():
+                s[item-1] = "0"
+                update.exist_date(s)
+                os.system("cls")
+                for temp in range(11):
+                    print()
+                print(Fore.RED + "                                                       Reset Others ?" + Fore.RESET)
+                print()
+                print("                                       <ENTER> Confirm               <ESC> Back")
+                k = readkey()
+                while k != key.ENTER() and k != key.ESC():
+                    k = readkey()
+                if k == key.ENTER():
+                    None
+                elif k == key.ESC():
+                    return admin_system()
+            elif k == key.ESC():
+                None
+        else:
+            return admin_system()
+#---------------------------------------------------------------------------------
 def teachers_system(): # Teachers accounts
     get.defaultpw()
     os.system("cls")
@@ -1862,7 +1912,7 @@ def choose_month(): # Select the month you want to add your assessment
     row = 1
     col = 1
     month = 1
-    month_list = ["[1] January","[2] Feburary","[3] March","[4] April","[5] May","\t[6] June\n\n","\t[7] July","[8] August","[9] September","[10] October","[11] November","[12] December"]
+    month_list = ["[1] January","[2] February","[3] March","[4] April","[5] May","\t[6] June\n\n","\t[7] July","[8] August","[9] September","[10] October","[11] November","[12] December"]
     while not leave:
         print_date()
         print("                                                Select And Confirm The Month")
@@ -1919,7 +1969,6 @@ def choose_month(): # Select the month you want to add your assessment
 #---------------------------------------------------------------------------------
 def choose_deadline(month): # Select the date which students should submit/have their assessment
     global schedule_year
-    s = get.exist_date(month)
     row = 0
     col = 0
     day_num = 1
@@ -1934,6 +1983,7 @@ def choose_deadline(month): # Select the date which students should submit/have 
     for y in range(len(month_day[0])):
         if month_day[0][y] == 1: # Find the position of 1st date
             col = y
+    s = get.exist_date(month, month_day, col)
     while not leave:
         print_date()
         print("\t\t\t\t     Select and Confirm the Deadline of Assessment")
@@ -2015,7 +2065,6 @@ def assm_time():
 #---------------------------------------------------------------------------------
 def choose_specific_period(month):
     global schedule_year
-    s = get.exist_date(month)
     row = 0
     col = 0
     day_num = 1
@@ -2030,6 +2079,7 @@ def choose_specific_period(month):
     for y in range(len(month_day[0])):
         if month_day[0][y] == 1: # Find the position of 1st date
             col = y
+    s = get.exist_date(month, month_day, col)
     while not leave:
         print_date()
         print("\t\t\t\t     Select and Confirm the Specific Period Arragement")
