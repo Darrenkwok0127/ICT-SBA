@@ -2297,6 +2297,7 @@ def pw_range_check(pw2): # Check if the password consists of 8 characters (at le
     return wl, cl, sl, number, space
 #---------------------------------------------------------------------------------
 def searching(): # Searching
+    get.assm()
     get.assm_log()
     os.system("cls")
     print_date()
